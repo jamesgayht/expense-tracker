@@ -19,7 +19,7 @@ export default function Home() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/api/expenses/insertExpense", formData, {
+      .post("http://localhost:3000/api/expense/insertExpense", formData, {
         headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
       })
       .then((res) => {
@@ -55,7 +55,7 @@ export default function Home() {
 
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/expenses/displayAll", {
+      .get("http://localhost:3000/api/expense/displayAll", {
         headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
       })
       .then((res) => {
