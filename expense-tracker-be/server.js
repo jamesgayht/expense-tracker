@@ -3,11 +3,12 @@ const mongoose = require("mongoose");
 const port = 3000;
 const app = express();
 const cors = require("cors");
-const userRouter = require('./routers/user_router')
+const userRouter = require("./routers/user_router");
+const expenseRouter = require("./routers/expense_item_router");
 
 // middleware to handle URL-encoded form data
-app.use(express.urlencoded({extended: true})) 
-app.use(express.json())
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // handle cors pre-flight requests
 app.use(
@@ -18,10 +19,10 @@ app.use(
 app.options("*", cors());
 
 // API endpoint routes
-app.use('/api/users',userRouter)
+app.use("/api/users", userRouter);
+app.use("/api/expenses", expenseRouter);
 
-
-// test route to check if server works 
+// test route to check if server works
 app.get("/api/test", (req, res) => {
   res.json("server works!");
 });
