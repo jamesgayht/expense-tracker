@@ -7,12 +7,12 @@ const expenseItemSchema = new mongoose.Schema(
         name: { type: String, required: true },
         category: { type: String, required: true },
         amount: { type: Number, required: true },
-        userID: {
+        /*userID: {
             type: Schema.Types.ObjectId,
             ref: "User",
             index: true,
             required: true
-        }
+        }*/
     },
     {
         timestamps: true

@@ -7,5 +7,6 @@ router.get("/displayAll", expensesControllers.listRecords);
 router.post("/insertExpense", expensesControllers.createRecord);
 router.post("/update/:recordID", expensesControllers.updateRecord);
 router.get("/displayOne/:recordID", expensesControllers.getRecord);
+router.post("/delete/:recordID", expensesControllers.deleteRecord)
 
 module.exports = router;
