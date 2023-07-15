@@ -9,5 +9,9 @@ router.post("/update/:recordID", authMiddleware,travelExpensesControllers.update
 router.get("/displayOne/:recordID",authMiddleware, travelExpensesControllers.getRecord);
 router.post("/delete/:recordID", authMiddleware,travelExpensesControllers.deleteRecord);
 
+
+router.get("/displayTrip/:tripName",authMiddleware, travelExpensesControllers.getTripRecord);
+router.get("/displayTrips/",authMiddleware, travelExpensesControllers.listTrips);
+
 module.exports = router;
 

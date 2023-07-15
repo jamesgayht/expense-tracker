@@ -18,6 +18,18 @@ const travelExpensesControllers = {
         .json({ msg: "An error occured, please try again" });
     }
   },
+  listTrips: async (req, res) => {
+    const userID = res.locals.authUserID;
+    console.log(">>> current user's userID: ", userID);
+  
+    try {
+      const trips = await travelExpenseItemModel.find({ userID: userID }).distinct("trip");
+      return res.status(200).json(trips);
+    } catch (error) {
+      console.error(">>> error getting trips: ", error);
+      return res.status(400).json({ msg: "An error occurred, please try again" });
+    }
+  },
 
   // creating an expense record within the app
   createRecord: async (req, res) => {
@@ -42,7 +54,7 @@ const travelExpensesControllers = {
         userID: expenseInput.userID,
         fx: expenseInput.fx,
         ccy: expenseInput.ccy,
-        location: expenseInput.location,
+        trip: expenseInput.trip,
       });
       res.statusCode = 201;
       res.json({
@@ -85,7 +97,7 @@ const travelExpensesControllers = {
           amount: data.amount,
           fx: data.fx,
           ccy: data.ccy,
-          location: data.location,
+          trip: data.trip,
         } // check how to update timestamp - is it part of the function parameters?
       );
     } catch (err) {
@@ -117,10 +129,27 @@ const travelExpensesControllers = {
     return res.json(expenseRecord);
   },
 
+  getTripRecord: async(req,res) => {
+    const tripRecordName =req.params.tripName
+    let tripRecord = null
+
+    try {
+      const tripRecord = await travelExpenseItemModel.find({trip:tripRecordName});
+      res.status(200).json(tripRecord);
+    } catch (error) {
+      res.statusCode=500
+      res.json({ msg: "An error occurred" });
+    }
+
+    if (!tripRecord){
+      res.statusCode=404
+      return res.json()
+    }
+  },
+
   // delete expense record
   deleteRecord: async (req, res) => {
-    const data = req.body;
-
+    // const data = req.body;
     let expenseRecord = null;
 
     try {

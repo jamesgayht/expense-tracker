@@ -9,7 +9,7 @@ const travelExpenseItemSchema = new mongoose.Schema(
     amount: { type: Number, required: true },
     fx:{type:Number, required:true},
     ccy:{type:String, required:true},
-    location:{type:String, required:true},
+    trip:{type:String, required:true},
     userID: {
       type: Schema.Types.ObjectId,
       ref: "User",
