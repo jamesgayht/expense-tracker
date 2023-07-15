@@ -29,7 +29,7 @@ export default function Travel() {
       .catch((error) => {
         console.error(">>> create expense error: ", error);
       });
-  };
+    };
 
   const limitTwoDP = (e) => {
     const t = e.target.value;
@@ -42,10 +42,10 @@ export default function Travel() {
   const categoryOptions = [
     { value: "f&b", label: "F&B" },
     { value: "transport", label: "Transport" },
-    { value: "housing", label: "Housing" },
+    { value: "accommodation", label: "Accommodation" },
     { value: "groceries", label: "Groceries" },
+    { value: "shopping", label: "Shopping" },
     { value: "entertainment", label: "Entertainment" },
-    { value: "travel", label: "Travel" },
     { value: "health & Fitness", label: "Health & Fitness" },
     { value: "others", label: "Others" },
   ];
@@ -340,13 +340,13 @@ export default function Travel() {
           />
         </div>
         <div>
-          <label htmlFor="currency">Currency:</label>
+          <label htmlFor="ccy">Currency:</label>
           <select
-            name="currency"
-            id="currency"
+            name="ccy"
+            id="ccy"
             required
             onChange={(e) => {
-              handleFormChange(e, "currency");
+              handleFormChange(e, "ccy");
             }}
           >
             {/* TODO: selected throws warning, surpress? */}
@@ -375,6 +375,18 @@ export default function Travel() {
             }}
             onChange={(e) => {
               handleFormChange(e, "fx");
+            }}
+          />
+        </div>
+        <div>
+          <label htmlFor="trip">Trip:</label>
+          <input
+            type="type"
+            id="trip"
+            name="trip"
+            required
+            onChange={(e) => {
+              handleFormChange(e, "trip");
             }}
           />
         </div>
