@@ -9,6 +9,38 @@ export default function Travel() {
   // create state to store form data
   const [formData, setFormData] = useState({});
 
+  const [tripName, setTripName] = useState("");
+  const [currency, setCurrency] = useState("");
+  const [trips, setTrips] = useState([]);
+  const [selectedTrip, setSelectedTrip] = useState("");
+  const [expenses, setExpenses] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/travel/displayTrips", {
+        headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
+      })
+      .then((res) => {
+        console.info(">>> get trips res: ", res);
+        setTrips(res.data);
+      })
+      .catch((error) => {
+        console.error(">>> get trips error: ", error);
+      });
+  }, []);
+
+  const handleTripNameChange = (e) => {
+    setTripName(e.target.value);
+  };
+
+  const handleCurrencyChange = (e) => {
+    setCurrency(e.target.value);
+  };
+
+  const handleFilterExpenses = (selectedTripName) => {
+    setSelectedTrip(selectedTripName);
+  };
+
   const handleFormChange = (e, fieldName) => {
     setFormData({
       ...formData,
@@ -29,7 +61,7 @@ export default function Travel() {
       .catch((error) => {
         console.error(">>> create expense error: ", error);
       });
-    };
+  };
 
   const limitTwoDP = (e) => {
     const t = e.target.value;
@@ -51,7 +83,7 @@ export default function Travel() {
   ];
 
   const currencyOptions = [
-    {value: "ADP", label:"ADP"},
+    { value: "ADP", label: "ADP" },
     { value: "AED", label: "AED" },
     { value: "AFA", label: "AFA" },
     { value: "ALL", label: "ALL" },
@@ -248,7 +280,7 @@ export default function Travel() {
     { value: "ZAR", label: "ZAR" },
     { value: "ZMK", label: "ZMK" },
     { value: "ZRN", label: "ZRN" },
-    { value: "ZWD", label: "ZWD" }
+    { value: "ZWD", label: "ZWD" },
   ];
 
   // Get user current monthly expenses
@@ -396,6 +428,22 @@ export default function Travel() {
       </form>
 
       <div>
+        <h2>Filter Trip:</h2>
+        <select
+          name="filter"
+          id="filter"
+          onChange={(e) => handleFilterExpenses(e.target.value)}
+        >
+          <option value="">Select Trip</option>
+          {trips.map((trip) => (
+            <option value={trip} key={trip}>
+              {trip}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <div>
         <h2>Travel Expenses:</h2>
         <table>
           <thead>
@@ -408,22 +456,24 @@ export default function Travel() {
           </thead>
           <tbody>
             {expenseNames ? (
-              expenseNames.map(function (exp, i) {
-                return (
-                  <tr key={i}>
-                    <td>{exp.date.substring(0, 10)}</td>
-                    <td>{exp.name}</td>
-                    <td>{exp.category}</td>
-                    <td>{exp.amount}</td>
-                    <td>
-                      <button>Edit</button>
-                    </td>
-                    <td>
-                      <button>Delete</button>
-                    </td>
-                  </tr>
-                );
-              })
+              expenseNames
+                .filter((exp) => exp.trip === selectedTrip) // Filter expenses based on the selected trip
+                .map(function (exp, i) {
+                  return (
+                    <tr key={i}>
+                      <td>{exp.date.substring(0, 10)}</td>
+                      <td>{exp.name}</td>
+                      <td>{exp.category}</td>
+                      <td>{exp.amount}</td>
+                      <td>
+                        <button>Edit</button>
+                      </td>
+                      <td>
+                        <button>Delete</button>
+                      </td>
+                    </tr>
+                  );
+                })
             ) : (
               <></>
             )}
