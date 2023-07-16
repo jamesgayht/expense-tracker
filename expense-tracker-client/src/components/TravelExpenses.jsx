@@ -480,7 +480,7 @@ export default function Travel() {
           />
         </div>
         <div>
-          <label htmlFor="ccy">Currency:</label>
+          <label htmlFor="ccy">Local Currency:</label>
           <select
             name="ccy"
             id="ccy"
@@ -526,16 +526,13 @@ export default function Travel() {
           </select>
         </div>
         <div>
-          <label htmlFor="fx">Exchange Rate:</label>
+          <label htmlFor="fx">Exchange Rate: </label> {/* 1 local ccy : xx base ccy. xx will be the amount to key in*/}
           <input
             type="number"
             id="fx"
             name="fx"
-            step="0.01"
+            step="any"
             required
-            onInput={(e) => {
-              limitTwoDP(e);
-            }}
             onChange={(e) => {
               handleFormChange(e, "fx");
             }}
@@ -565,7 +562,7 @@ export default function Travel() {
           id="filter"
           onChange={(e) => handleFilterExpenses(e.target.value)}
         >
-          <option value="">Select Trip</option>
+          <option value="">Select Trip (or All Trips if unselected)</option>
           {trips.map((trip) => (
             <option value={trip} key={trip}>
               {trip}
@@ -583,6 +580,10 @@ export default function Travel() {
               <th>Name</th>
               <th>Category</th>
               <th>Amount in Local Currency</th>
+              <th>Local Currency</th>
+              <th>Amount in Base Currency</th>
+              <th>Base Currency</th>
+              <th>Exchange Rate</th>
             </tr>
           </thead>
           <tbody>
@@ -592,6 +593,10 @@ export default function Travel() {
                 <td>{expense.name}</td>
                 <td>{expense.category}</td>
                 <td>{expense.amount}</td>
+                <td>{expense.ccy}</td>
+                <td>{expense.baseAmount}</td>
+                <td>{expense.baseCCY}</td>
+                <td>{expense.fx}</td>
                 <td>
                   <button onClick={() => handleEdit(expense)}>Edit</button>
                 </td>
@@ -652,17 +657,63 @@ export default function Travel() {
                 type="number"
                 id="edit-amount"
                 name="amount"
-                min="0"
                 step="0.01"
                 value={formData.amount || selectedExpense.amount}
-                onChange={(e) => {
+                required
+                onInput={(e) => {
                   limitTwoDP(e);
+                }}
+                onChange={(e) => {
                   handleFormChange(e, "amount");
                 }}
               />
             </div>
             <div>
-              <button type="submit">Save Changes</button>
+              <label htmlFor="edit-fx">Exchange Rate:</label> {/* exchange rate shouldn't be limited to 2dp */}
+              <input
+                type="number"
+                id="edit-fx"
+                name="fx"
+                step="any"
+                value={formData.fx || selectedExpense.fx}
+                required
+                onChange={(e) => {
+                  handleFormChange(e, "fx");
+                }}
+              />
+            </div>
+            <div>
+              <label htmlFor="edit-ccy">Local Currency:</label>
+              <select
+                id="edit-ccy"
+                name="ccy"
+                value={formData.ccy || selectedExpense.ccy}
+                onChange={(e) => handleFormChange(e, "ccy")}
+              >
+                {currencyOptions.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="edit-baseCCY">Base Currency:</label>
+              <select
+                id="edit-baseCCY"
+                name="baseCCY"
+                value={formData.baseCCY || selectedExpense.baseCCY}
+                onChange={(e) => handleFormChange(e, "baseCCY")}
+              >
+                {currencyOptions.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <button type="submit">Save</button>
               <button onClick={() => setSelectedExpense(null)}>Cancel</button>
             </div>
           </form>

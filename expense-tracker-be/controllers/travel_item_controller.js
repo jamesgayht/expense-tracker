@@ -46,6 +46,8 @@ const travelExpensesControllers = {
       return res.status(400).json({ msg: validationResult.error }); //weird that this doesn't allow us to input today's date
 
     try {
+      const baseAmount = expenseInput.amount * expenseInput.fx;
+
       const expenseRecord = await travelExpenseItemModel.create({
         date: expenseInput.date,
         name: expenseInput.name,
@@ -55,6 +57,8 @@ const travelExpensesControllers = {
         fx: expenseInput.fx,
         ccy: expenseInput.ccy,
         trip: expenseInput.trip,
+        baseCCY: expenseInput.baseCCY,
+        baseAmount: baseAmount,
       });
       res.statusCode = 201;
       res.json({
@@ -72,8 +76,9 @@ const travelExpensesControllers = {
   updateRecord: async (req, res) => {
     const data = req.body;
     let record = null;
+    let baseAmount;
 
-    // getting expense record from MongoDB. If it does not eist, return error code 404
+    // getting expense record from MongoDB. If it does not exist, return error code 404
     try {
       record = await travelExpenseItemModel.findById(req.params.recordID);
     } catch (err) {
@@ -87,6 +92,17 @@ const travelExpensesControllers = {
       return res.json({msg:"record not found"});
     }
 
+    // Validate the amount and fx values as user might not always be updating both fx and amount
+    if (isNaN(data.amount)) {
+      baseAmount = parseFloat(record.amount) * parseFloat(data.fx)
+    } else if (isNaN(data.fx)){
+      baseAmount = parseFloat(data.amount) * parseFloat(record.fx)
+    } else if (isNaN(data.amount) && (isNan(data.fx))) {
+      baseAmount = parseFloat(record.amount) * parseFloat(record.fx);
+    } else {
+      baseAmount = parseFloat(data.amount) * parseFloat(data.fx);
+    }
+
     try {
       await travelExpenseItemModel.updateOne(
         { _id: req.params.recordID },
@@ -98,11 +114,12 @@ const travelExpensesControllers = {
           fx: data.fx,
           ccy: data.ccy,
           trip: data.trip,
-        } // check how to update timestamp - is it part of the function parameters?
+          baseAmount: baseAmount,
+        } 
       );
     } catch (err) {
       res.statusCode = 500;
-      return res.json();
+      return res.json({msg: "Internal Server Error"});
     }
     res.json({ msg: "expense item updated successfully" });
   },

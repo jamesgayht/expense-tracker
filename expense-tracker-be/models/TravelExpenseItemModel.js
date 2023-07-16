@@ -24,14 +24,6 @@ const travelExpenseItemSchema = new mongoose.Schema(
   }
 );
 
-// Pre-save hook to calculate baseAmount before saving
-travelExpenseItemSchema.pre("save", function (next) {
-  if (this.isModified("amount") || this.isModified("fx")) {
-    this.baseAmount = this.amount * this.fx;
-  }
-  next();
-});
-
 
 const TravelExpenses = mongoose.model("TravelExpenses", travelExpenseItemSchema);
 

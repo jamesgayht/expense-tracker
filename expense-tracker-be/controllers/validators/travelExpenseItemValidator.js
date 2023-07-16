@@ -30,6 +30,7 @@ const travelExpenseItemValidators = {
     fx:Joi.number().required(),
     ccy:Joi.string().valid(...currency_list).required(), //validate currency based on currency_list so that we don't have to import joi-currency-code, we only accept ISO for now
     trip:Joi.string().required(),
+    baseCCY:Joi.string().valid(...currency_list).required()
   }),
 };
 
