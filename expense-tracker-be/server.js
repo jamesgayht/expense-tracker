@@ -5,6 +5,7 @@ const app = express();
 const cors = require("cors");
 const userRouter = require("./routers/user_router");
 const expenseRouter = require("./routers/expense_item_router");
+const travelRouter = require("./routers/travel_expense_item_router");
 
 // middleware to handle URL-encoded form data
 app.use(express.urlencoded({ extended: true }))
@@ -24,16 +25,20 @@ app.use('/api/users', userRouter)
 // Expense Controller routes
 app.use("/api/expense", expenseRouter);
 
+// Travel Expense API endpoint route
+app.use('/api/travel', travelRouter)
+
+
 app.get("/api/test", (req, res) => {
   res.json("server works!");
 });
 
 // LISTENER
 mongoose
-  .connect(`mongodb://localhost:27017/expense-tracker`)
-  // .connect(
-  //   `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?retryWrites=true&w=majority`
-  // )
+  // .connect(`mongodb://localhost:27017/expense-tracker`)
+  .connect(
+    `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PASS}@${process.env.MONGO_HOST}/${process.env.MONGO_DB}?retryWrites=true&w=majority`
+  )
   .then(() => {
     console.log("DB connected");
 

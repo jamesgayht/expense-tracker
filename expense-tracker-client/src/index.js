@@ -12,6 +12,7 @@ import AuthProvider from "./components/auth/AuthProvider";
 import GuestOnly from "./components/auth/GuestOnly";
 import AuthOnly from "./components/auth/AuthOnly";
 import Home from "./components/Home";
+import Travel from "./components/TravelExpenses";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <GuestOnly component={Register} />,
+  },
+  {
+    path: "/travel",
+    element: <AuthOnly component={Travel} />,
   },
 ]);
 
