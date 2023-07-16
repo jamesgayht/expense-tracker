@@ -464,7 +464,7 @@ export default function Travel() {
           </select>
         </div>
         <div>
-          <label htmlFor="amount">Amount:</label>
+          <label htmlFor="amount">Amount in Local Currency:</label>
           <input
             type="number"
             id="amount"
@@ -582,9 +582,7 @@ export default function Travel() {
               <th>Date</th>
               <th>Name</th>
               <th>Category</th>
-              <th>Amount</th>
-              <th>Edit</th>
-              <th>Delete</th>
+              <th>Amount in Local Currency</th>
             </tr>
           </thead>
           <tbody>
