@@ -15,6 +15,9 @@ export default function Travel() {
   const [selectedTrip, setSelectedTrip] = useState("");
   const [expenses, setExpenses] = useState([]);
 
+  // Introduce a new state variable for the selected expense
+  const [selectedExpense, setSelectedExpense] = useState(null);
+
   useEffect(() => {
     axios
       .get("http://localhost:3000/api/travel/displayTrips", {
@@ -38,13 +41,29 @@ export default function Travel() {
   };
 
   const handleFilterExpenses = (selectedTripName) => {
-    setSelectedTrip(selectedTripName);
+    setSelectedTrip(selectedTripName || "");
   };
 
   const handleFormChange = (e, fieldName) => {
     setFormData({
       ...formData,
       [fieldName]: e.target.value,
+    });
+  };
+
+
+  // Handler for selecting an expense for editing
+  const handleEdit = (expense) => {
+    setSelectedExpense(expense);
+    setFormData({
+      date: expense.date.substring(0, 10),
+      name: expense.name,
+      category: expense.category,
+      amount: expense.amount,
+      ccy: expense.ccy,
+      baseCCY: expense.baseCCY,
+      fx: expense.fx,
+      trip: expense.trip,
     });
   };
 
@@ -56,10 +75,94 @@ export default function Travel() {
       })
       .then((res) => {
         console.info(">>> create expense res: ", res);
-        window.location.reload();
+
+        // Fetch the updated list of trips
+        axios
+          .get("http://localhost:3000/api/travel/displayTrips", {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
+            },
+          })
+          .then((res) => {
+            console.info(">>> get trips res: ", res);
+            setTrips(res.data);
+          })
+          .catch((error) => {
+            console.error(">>> get trips error: ", error);
+          });
+
+        // Fetch the updated list of expenses
+        axios
+          .get("http://localhost:3000/api/travel/displayAll", {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
+            },
+          })
+          .then((res) => {
+            console.info(">>> get expense res: ", res);
+            setExpenses(res.data);
+          })
+          .catch((error) => {
+            console.error(">>> get expense error: ", error);
+          });
       })
       .catch((error) => {
         console.error(">>> create expense error: ", error);
+      });
+  };
+
+  const handleDelete = (expenseId) => {
+    axios
+      .post(`http://localhost:3000/api/travel/delete/${expenseId}`, formData, {
+        headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
+      })
+      .then((res) => {
+        console.info(">>> delete expense res: ", res);
+
+        // Remove the deleted expense from the expenses state
+        setExpenses((prevExpenses) =>
+          prevExpenses.filter((exp) => exp._id !== expenseId)
+        );
+      })
+      .catch((error) => {
+        console.error(">>> delete expense error: ", error);
+      });
+  };
+
+  // Handler for selecting an expense for editing
+  const updateExpense = () => {
+    axios
+      .post(
+        `http://localhost:3000/api/travel/update/${selectedExpense._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.info(">>> update expense res: ", res);
+        setSelectedExpense(null);
+        setFormData({});
+  
+        // Fetch the updated list of expenses
+        axios
+          .get("http://localhost:3000/api/travel/displayAll", {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
+            },
+          })
+          .then((res) => {
+            console.info(">>> get expense res: ", res);
+            setExpenses(res.data);
+          })
+          .catch((error) => {
+            console.error(">>> get expense error: ", error);
+          });
+      })
+      .catch((error) => {
+        console.error(">>> update expense error: ", error);
       });
   };
 
@@ -283,8 +386,6 @@ export default function Travel() {
     { value: "ZWD", label: "ZWD" },
   ];
 
-  // Get user current monthly expenses
-  const [expenseNames, setExpenseNames] = useState(null);
 
   useEffect(() => {
     axios
@@ -293,14 +394,21 @@ export default function Travel() {
       })
       .then((res) => {
         console.info(">>> get expense res: ", res);
-        setExpenseNames(res.data);
+        
+        // Filter expenses based on the selected trip
+        const filteredExpenses = selectedTrip
+          ? res.data.filter((expense) => expense.trip === selectedTrip)
+          : res.data;
+        
+        setExpenses(filteredExpenses);
       })
       .catch((error) => {
         console.error(">>> get expense error: ", error);
       });
-  }, []);
+  }, [selectedTrip]);
+  
 
-  console.info(expenseNames);
+  console.info(expenses);
 
   return (
     <div>
@@ -308,7 +416,7 @@ export default function Travel() {
       <button onClick={logoutSuccess}>Logout</button>
 
       <form onSubmit={handleSubmit}>
-        <div>
+      <div>
           <label htmlFor="date">Date:</label>
           <input
             type="date"
@@ -356,7 +464,7 @@ export default function Travel() {
           </select>
         </div>
         <div>
-          <label htmlFor="amount">Amount:</label>
+          <label htmlFor="amount">Amount in Local Currency:</label>
           <input
             type="number"
             id="amount"
@@ -372,7 +480,7 @@ export default function Travel() {
           />
         </div>
         <div>
-          <label htmlFor="ccy">Currency:</label>
+          <label htmlFor="ccy">Local Currency:</label>
           <select
             name="ccy"
             id="ccy"
@@ -395,16 +503,36 @@ export default function Travel() {
           </select>
         </div>
         <div>
-          <label htmlFor="fx">Exchange Rate:</label>
+          <label htmlFor="baseCCY">Base Currency:</label>
+          <select
+            name="baseCCY"
+            id="baseCCY"
+            required
+            onChange={(e) => {
+              handleFormChange(e, "baseCCY");
+            }}
+          >
+            {/* TODO: selected throws warning, surpress? */}
+            <option value="placeholder" disabled={true} selected>
+              Select...
+            </option>
+            {currencyOptions.map(function (ccy, i) {
+              return (
+                <option value={ccy.value} key={i}>
+                  {ccy.label}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="fx">Exchange Rate: </label> {/* 1 local ccy : xx base ccy. xx will be the amount to key in*/}
           <input
             type="number"
             id="fx"
             name="fx"
-            step="0.01"
+            step="any"
             required
-            onInput={(e) => {
-              limitTwoDP(e);
-            }}
             onChange={(e) => {
               handleFormChange(e, "fx");
             }}
@@ -434,7 +562,7 @@ export default function Travel() {
           id="filter"
           onChange={(e) => handleFilterExpenses(e.target.value)}
         >
-          <option value="">Select Trip</option>
+          <option value="">Select Trip (or All Trips if unselected)</option>
           {trips.map((trip) => (
             <option value={trip} key={trip}>
               {trip}
@@ -451,35 +579,146 @@ export default function Travel() {
               <th>Date</th>
               <th>Name</th>
               <th>Category</th>
-              <th>Amount</th>
+              <th>Amount in Local Currency</th>
+              <th>Local Currency</th>
+              <th>Amount in Base Currency</th>
+              <th>Base Currency</th>
+              <th>Exchange Rate</th>
             </tr>
           </thead>
           <tbody>
-            {expenseNames ? (
-              expenseNames
-                .filter((exp) => exp.trip === selectedTrip) // Filter expenses based on the selected trip
-                .map(function (exp, i) {
-                  return (
-                    <tr key={i}>
-                      <td>{exp.date.substring(0, 10)}</td>
-                      <td>{exp.name}</td>
-                      <td>{exp.category}</td>
-                      <td>{exp.amount}</td>
-                      <td>
-                        <button>Edit</button>
-                      </td>
-                      <td>
-                        <button>Delete</button>
-                      </td>
-                    </tr>
-                  );
-                })
-            ) : (
-              <></>
-            )}
+            {expenses.map((expense) => (
+              <tr key={expense._id}>
+                <td>{expense.date}</td>
+                <td>{expense.name}</td>
+                <td>{expense.category}</td>
+                <td>{expense.amount}</td>
+                <td>{expense.ccy}</td>
+                <td>{expense.baseAmount}</td>
+                <td>{expense.baseCCY}</td>
+                <td>{expense.fx}</td>
+                <td>
+                  <button onClick={() => handleEdit(expense)}>Edit</button>
+                </td>
+                <td>
+                  <button onClick={() => handleDelete(expense._id)}>
+                    Delete
+                  </button>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
+
+      {/* Edit Expense Modal */}
+      {selectedExpense && (
+        <div>
+          <h2>Edit Expense</h2>
+          <form onSubmit={updateExpense}>
+            <div>
+              <label htmlFor="edit-date">Date:</label>
+              <input
+                type="date"
+                id="edit-date"
+                name="date"
+                value={formData.date || selectedExpense.date}
+                onChange={(e) => handleFormChange(e, "date")}
+              />
+            </div>
+            <div>
+              <label htmlFor="edit-name">Name:</label>
+              <input
+                type="text"
+                id="edit-name"
+                name="name"
+                value={formData.name || selectedExpense.name}
+                onChange={(e) => handleFormChange(e, "name")}
+              />
+            </div>
+            <div>
+              <label htmlFor="edit-category">Category:</label>
+              <select
+                id="edit-category"
+                name="category"
+                value={formData.category || selectedExpense.category}
+                onChange={(e) => handleFormChange(e, "category")}
+              >
+                {categoryOptions.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="edit-amount">Amount:</label>
+              <input
+                type="number"
+                id="edit-amount"
+                name="amount"
+                step="0.01"
+                value={formData.amount || selectedExpense.amount}
+                required
+                onInput={(e) => {
+                  limitTwoDP(e);
+                }}
+                onChange={(e) => {
+                  handleFormChange(e, "amount");
+                }}
+              />
+            </div>
+            <div>
+              <label htmlFor="edit-fx">Exchange Rate:</label> {/* exchange rate shouldn't be limited to 2dp */}
+              <input
+                type="number"
+                id="edit-fx"
+                name="fx"
+                step="any"
+                value={formData.fx || selectedExpense.fx}
+                required
+                onChange={(e) => {
+                  handleFormChange(e, "fx");
+                }}
+              />
+            </div>
+            <div>
+              <label htmlFor="edit-ccy">Local Currency:</label>
+              <select
+                id="edit-ccy"
+                name="ccy"
+                value={formData.ccy || selectedExpense.ccy}
+                onChange={(e) => handleFormChange(e, "ccy")}
+              >
+                {currencyOptions.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label htmlFor="edit-baseCCY">Base Currency:</label>
+              <select
+                id="edit-baseCCY"
+                name="baseCCY"
+                value={formData.baseCCY || selectedExpense.baseCCY}
+                onChange={(e) => handleFormChange(e, "baseCCY")}
+              >
+                {currencyOptions.map((option) => (
+                  <option value={option.value} key={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <button type="submit">Save</button>
+              <button onClick={() => setSelectedExpense(null)}>Cancel</button>
+            </div>
+          </form>
+        </div>
+      )}
     </div>
   );
 }
