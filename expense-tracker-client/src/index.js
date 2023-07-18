@@ -1,7 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
@@ -12,11 +10,14 @@ import AuthProvider from "./components/auth/AuthProvider";
 import GuestOnly from "./components/auth/GuestOnly";
 import AuthOnly from "./components/auth/AuthOnly";
 import Home from "./components/Home";
+import { GlobalStyle } from "./styles/GlobalStyle";
+import { GlobalProvider } from "./context/globalContext";
+import App from "./App";
 
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <AuthOnly component={Home} />,
+    element: <AuthOnly component={App} />,
   },
   {
     path: "/login",
@@ -31,11 +32,14 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <CookiesProvider>
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
-    </CookiesProvider>
+    <GlobalStyle />
+    <GlobalProvider>
+      <CookiesProvider>
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </CookiesProvider>
+    </GlobalProvider>
   </React.StrictMode>
 );
 
