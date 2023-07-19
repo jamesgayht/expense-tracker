@@ -13,7 +13,7 @@ import Home from "./components/Home";
 import { GlobalStyle } from "./styles/GlobalStyle";
 import { GlobalProvider } from "./context/globalContext";
 import App from "./App";
-import Travel from "./components/TravelExpenses";
+import Travel from "./components/Travel/TravelExpenses";
 
 const router = createBrowserRouter([
   {
