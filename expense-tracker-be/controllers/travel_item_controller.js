@@ -164,6 +164,27 @@ const travelExpensesControllers = {
     }
   },
 
+  getCCY: async (req, res) => {
+    const tripName = req.params.tripName;
+
+    try {
+      const expenses = await travelExpenseItemModel.find({ trip: tripName });
+  
+      if (!expenses || expenses.length === 0) {
+        return res.status(404).json({ msg: "Trip not found" });
+      }
+  
+      const baseCCY = expenses[0].baseCCY;
+      const ccy = expenses[0].ccy;
+      const fx = expenses[0].fx;
+  
+      return res.status(200).json({ ccy, baseCCY, fx });
+    } catch (error) {
+      console.error(">>> error getting ccy and fx: ", error);
+      return res.status(500).json({ msg: "An error occurred" });
+    }
+  },
+
   // delete expense record
   deleteRecord: async (req, res) => {
     // const data = req.body;
