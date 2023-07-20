@@ -1,16 +1,20 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 import {
-  allowance,
+  accommodation,
   calendar,
   categories,
-  dollar,
+  currency,
   edit,
-  investment,
-  money,
+  entertainment,
+  fitness,
+  fnb,
+  forex,
+  groceries,
   others,
+  shopping,
+  transport,
   trash,
-  work,
 } from "../../utils/icons";
 import TravelEditForm from "./TravelEditForm";
 
@@ -31,17 +35,26 @@ function TravelItem({
 
   const categoryIcon = (category) => {
     switch (category) {
-      case "salary":
-        return money;
+      case "f&b":
+        return fnb;
 
-      case "freelance":
-        return work;
+      case "transport":
+        return transport;
 
-      case "allowance":
-        return allowance;
+      case "accommodation":
+        return accommodation;
 
-      case "investments":
-        return investment;
+      case "groceries":
+        return groceries;
+
+      case "shopping":
+        return shopping;
+
+      case "entertainment":
+        return entertainment;
+
+      case "health & fitness":
+        return fitness;
 
       case "others":
         return others;
@@ -82,7 +95,7 @@ function TravelItem({
       </div>
       <div className="inner-content">
         <p>
-          {dollar} {amount}
+          {ccy} {amount}
         </p>
         <p>
           {calendar} {date ? date.substring(0, 10) : ""}
@@ -94,13 +107,13 @@ function TravelItem({
 
       <div className="inner-content">
         <p>
-          {dollar} {ccy}
+          {currency} {ccy}
         </p>
         <p>
-          {calendar} {baseCCY}
+          {currency} {baseCCY}
         </p>
         <p>
-          {categories} {fx}
+          {forex} {fx}
         </p>
       </div>
 
@@ -142,11 +155,11 @@ const TravelItemStyled = styled.div`
   background: #fcf6f9;
   border: 2px solid #ffffff;
   box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-  border-radiusL 20px;
+  border-radius: 20px;
   padding: 1rem;
   margin-bottom: 1rem;
-  display: flex; 
-  align-items: center; 
+  display: flex;
+  align-items: center;
   gap: 1rem;
   width: 100%;
   color: #222260;
@@ -157,57 +170,56 @@ const TravelItemStyled = styled.div`
     background: #f5f5f5;
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
     border: 2px solid #ffffff;
     i {
-        font-size: 2.6rem;
-    } 
+      font-size: 2.6rem;
+    }
   }
   .content {
     flex: 1;
     display: flex;
-    flex-direction: column; 
-    gap: .2rem;
+    flex-direction: column;
+    gap: 0.2rem;
     h5 {
-        font-size: 1.3rem;
-        padding-left: 2rem;
-        position: relative; 
-        &::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: .8rem;
-            height: .8rem;
-            border-radius: 50%;
-            background: (--color-blue);
-        }
-
+      font-size: 1.3rem;
+      padding-left: 2rem;
+      position: relative;
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0.8rem;
+        height: 0.8rem;
+        border-radius: 50%;
+        background: (--color-blue);
+      }
     }
 
     .inner-content {
-        display: flex; 
-        justify-content: space-between;
-        align-items: center; 
-        .text {
-            display: flex;
-            align-items: center; 
-            gap: 1.5rem; 
-            p {
-                display: flex;
-                align-items: center; 
-                gap: 0.5rem; 
-                color: var(--primary-color);
-                opacity: 0.8;
-            }
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .text {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        p {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--primary-color);
+          opacity: 0.8;
         }
+      }
     }
   }
 
   .trash-btn,
   .edit-btn {
-    padding: 0.4rem .6rem;
+    padding: 0.4rem 0.6rem;
     margin: 0.4rem;
   }
 `;

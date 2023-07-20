@@ -9,7 +9,6 @@ import { CookiesProvider } from "react-cookie";
 import AuthProvider from "./components/auth/AuthProvider";
 import GuestOnly from "./components/auth/GuestOnly";
 import AuthOnly from "./components/auth/AuthOnly";
-import Home from "./components/Home";
 import { GlobalStyle } from "./styles/GlobalStyle";
 import { GlobalProvider } from "./context/globalContext";
 import App from "./App";

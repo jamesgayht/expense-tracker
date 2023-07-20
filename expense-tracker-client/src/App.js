@@ -2,7 +2,7 @@ import { styled } from "styled-components";
 import { MainLayout } from "./styles/Layouts";
 import Navigation from "./components/Navigation";
 import { useState } from "react";
-import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard/Dashboard";
 import Incomes from "./components/Income/Incomes";
 import Expenses from "./components/Expenses/Expenses";
 import { useGlobalContext } from "./context/globalContext";

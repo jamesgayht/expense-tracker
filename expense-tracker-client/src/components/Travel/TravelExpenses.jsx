@@ -8,6 +8,8 @@ import TravelForm from "./TravelForm";
 function Trips() {
   const {
     trips,
+    tripCCY,
+    tripAmount,
     getTravelExpenses,
     deleteTravelExpense,
     updateTravelExpense,
@@ -24,7 +26,10 @@ function Trips() {
     <TripsStyled>
       <InnerLayout>
         <h2 className="total-travel-expense">
-          Total Travel Expense for {month}: <span>$0</span>
+          Total Travel Expense for {month}:{" "}
+          <span>
+            {tripCCY} {tripAmount}
+          </span>
         </h2>
         <div className="travel-expense-content">
           <div className="form-container">
@@ -105,7 +110,7 @@ const TripsStyled = styled.div`
 
 export default Trips;
 
-  /*
+/*
 import { useContext, useEffect, useState, useRef } from "react";
 import { AuthContext } from "../auth/AuthProvider";
 import axios from "axios";
@@ -584,7 +589,9 @@ export default function Travel() {
         </div>
       </div>
 */
-      {/* If Existing is selected, then the existing trip name drop down will appear */}
+{
+  /* If Existing is selected, then the existing trip name drop down will appear */
+}
 //       <div>
 //         {/* {formData.tripType === "existing" && ( */}
 //         {tripType === "existing" && (
@@ -641,7 +648,7 @@ export default function Travel() {
 //                     handleFormChange(e, "category");
 //                   }}
 //                 >
-                  
+
 //                   <option value="placeholder" disabled={true} selected>
 //                     Select...
 //                   </option>
@@ -789,7 +796,7 @@ export default function Travel() {
 //                     handleFormChange(e, "category");
 //                   }}
 //                 >
-                  
+
 //                   <option value="placeholder" disabled={true} selected>
 //                     Select...
 //                   </option>

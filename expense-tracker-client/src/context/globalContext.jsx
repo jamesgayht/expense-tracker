@@ -11,6 +11,12 @@ export const GlobalProvider = ({ children }) => {
   const [expenses, setExpenses] = useState([]);
   const [trips, setTrips] = useState([]);
   const [month, setMonth] = useState(null);
+  const [tripAmount, setTripAmount] = useState(null);
+  const [tripCCY, setTripCCY] = useState(null);
+  const [p3MonthExp, setP3MonthExp] = useState([]);
+  const [currentMonthExpense, setCurrentMonthExpense] = useState(null);
+  const [p3MonthIncome, setP3MonthIncome] = useState([]);
+  const [currentMonthIncome, setCurrentMonthIncome] = useState(null);
 
   // <----------- Travel Expenses ---------->
   const addTravelExpense = async (travelExpense) => {
@@ -36,12 +42,14 @@ export const GlobalProvider = ({ children }) => {
       })
       .then((res) => {
         console.info(">>> get trips res: ", res);
-        setTrips(res.data);
+        const sortedTrips = res.data.sort((a, b) => {
+          return new Date(b.date) - new Date(a.date);
+        });
+        setTrips(sortedTrips);
+        getTripAmount(res.data);
       })
       .catch((error) => {
-        console.error((error) => {
-          console.error(">>> get trips error: ", error);
-        });
+        console.error(">>> get trips error: ", error);
       });
   };
 
@@ -77,6 +85,29 @@ export const GlobalProvider = ({ children }) => {
       });
   };
 
+  const getTripAmount = (data) => {
+    const sortedTrips = data.sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
+
+    const latestTrip = sortedTrips[0].trip;
+    setTripCCY(sortedTrips[0].ccy);
+    console.info(latestTrip);
+
+    const filteredTripExpense = [];
+    sortedTrips.map((trip) => {
+      if (trip.trip === latestTrip) filteredTripExpense.push(trip.amount);
+      return "";
+    });
+
+    let total = 0;
+    filteredTripExpense.forEach((amount) => {
+      total += amount;
+    });
+
+    setTripAmount(total);
+  };
+
   // <----------- Expenses ---------->
   const addExpense = async (expense) => {
     await axios
@@ -101,12 +132,14 @@ export const GlobalProvider = ({ children }) => {
       })
       .then((res) => {
         console.info(">>> get expenses res: ", res);
-        setExpenses(res.data);
+        const sortedExpenses = res.data.sort((a, b) => {
+          return new Date(b.date) - new Date(a.date);
+        });
+        setExpenses(sortedExpenses);
+        getMonthlyExpenses(sortedExpenses);
       })
       .catch((error) => {
-        console.error((error) => {
-          console.error(">>> get expenses error: ", error);
-        });
+        console.error(">>> get expenses error: ", error);
       });
   };
 
@@ -120,9 +153,7 @@ export const GlobalProvider = ({ children }) => {
         getExpenses();
       })
       .catch((error) => {
-        console.error((error) => {
-          console.error(">>> delete expense error: ", error);
-        });
+        console.error(">>> delete expense error: ", error);
       });
   };
 
@@ -140,6 +171,39 @@ export const GlobalProvider = ({ children }) => {
       .catch((err) => {
         console.error(">>> update expense error: ", err);
       });
+  };
+
+  const getMonthlyExpenses = (sortedExpenses) => {
+    const date = new Date();
+    const currMonth = date.getMonth() + 1;
+    const currYear = date.getFullYear();
+
+    let p2MonthExp = { month: `${currYear}-${currMonth - 2}`, amount: 0 };
+    let prevMonthExp = { month: `${currYear}-${currMonth - 1}`, amount: 0 };
+    let currMonthExp = { month: `${currYear}-${currMonth}`, amount: 0 };
+
+    sortedExpenses.map((exp) => {
+      switch (Number(exp.date.substring(5, 7))) {
+        case Number(currMonth) - 2:
+          p2MonthExp.amount += exp.amount;
+          break;
+
+        case Number(currMonth) - 1:
+          prevMonthExp.amount += exp.amount;
+          break;
+
+        case Number(currMonth):
+          currMonthExp.amount += exp.amount;
+          break;
+
+        default:
+          break;
+      }
+      return "";
+    });
+
+    setCurrentMonthExpense(currMonthExp.amount);
+    setP3MonthExp([p2MonthExp, prevMonthExp, currMonthExp]);
   };
 
   // <----------- Incomes ---------->
@@ -166,7 +230,11 @@ export const GlobalProvider = ({ children }) => {
       })
       .then((res) => {
         console.info(">>> get income res: ", res);
-        setIncomes(res.data);
+        const sortedIncome = res.data.sort((a, b) => {
+          return new Date(b.date) - new Date(a.date);
+        });
+        setIncomes(sortedIncome);
+        getMonthlyIncome(sortedIncome);
       })
       .catch((error) => {
         console.error((error) => {
@@ -207,6 +275,39 @@ export const GlobalProvider = ({ children }) => {
       });
   };
 
+  const getMonthlyIncome = (sortedIncomes) => {
+    const date = new Date();
+    const currMonth = date.getMonth() + 1;
+    const currYear = date.getFullYear();
+
+    let p2MonthInc = { month: `${currYear}-${currMonth - 2}`, amount: 0 };
+    let prevMonthInc = { month: `${currYear}-${currMonth - 1}`, amount: 0 };
+    let currMonthInc = { month: `${currYear}-${currMonth}`, amount: 0 };
+
+    sortedIncomes.map((inc) => {
+      switch (Number(inc.date.substring(5, 7))) {
+        case Number(currMonth) - 2:
+          p2MonthInc.amount += inc.amount;
+          break;
+
+        case Number(currMonth) - 1:
+          prevMonthInc.amount += inc.amount;
+          break;
+
+        case Number(currMonth):
+          currMonthInc.amount += inc.amount;
+          break;
+
+        default:
+          break;
+      }
+      return "";
+    });
+
+    setCurrentMonthIncome(currMonthInc.amount);
+    setP3MonthIncome([p2MonthInc, prevMonthInc, currMonthInc]);
+  };
+
   // <----------- Month ---------->
   const getCurrentMonth = () => {
     const date = new Date();
@@ -243,6 +344,28 @@ export const GlobalProvider = ({ children }) => {
     }
   };
 
+  // <----------- TXN HISTORY ---------->
+  const transactionHistory = () => {
+    const incomeHistory = [];
+    incomes.map((income) => {
+      income.type = "income";
+      incomeHistory.push(income);
+    });
+
+    const expenseHistory = [];
+    expenses.map((expense) => {
+      expense.type = "expense";
+      expenseHistory.push(expense);
+    });
+
+    const history = [...incomeHistory, ...expenseHistory];
+    history.sort((a, b) => {
+      return new Date(b.date) - new Date(a.date);
+    });
+
+    return history;
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -250,19 +373,26 @@ export const GlobalProvider = ({ children }) => {
         getTravelExpenses,
         deleteTravelExpense,
         updateTravelExpense,
+        tripCCY,
         trips,
+        tripAmount,
         addExpense,
         getExpenses,
         deleteExpense,
         updateExpense,
         expenses,
+        p3MonthExp,
+        currentMonthExpense,
         addIncome,
         getIncome,
         deleteIncome,
         updateIncome,
         incomes,
+        currentMonthIncome,
+        p3MonthIncome,
         getCurrentMonth,
         month,
+        transactionHistory,
       }}
     >
       {children}
