@@ -9,4 +9,6 @@ router.post("/", authMiddleware, incomesControllers.createIncome);
 
 router.post("/delete", authMiddleware, incomesControllers.deleteIncome);
 
+router.post("/update/:recordID", authMiddleware, incomesControllers.updateIncome);
+
 module.exports = router;

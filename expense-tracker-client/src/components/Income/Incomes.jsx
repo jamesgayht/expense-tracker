@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import { InnerLayout } from "../../styles/Layouts";
 import IncomeForm from "./IncomeForm";
@@ -6,7 +6,7 @@ import { useGlobalContext } from "../../context/globalContext";
 import IncomeItem from "./IncomeItem";
 
 function Incomes() {
-  const { incomes, getIncome, deleteIncome, getCurrentMonth, month } = useGlobalContext();
+  const { incomes, updateIncome, getIncome, deleteIncome, getCurrentMonth, month } = useGlobalContext();
 
   useEffect(() => {
     getIncome();
@@ -16,7 +16,6 @@ function Incomes() {
   return (
     <IncomesStyled>
       <InnerLayout>
-        <h1>Incomes</h1>
         <h2 className="total-income">
           Total Income for {month}: <span>$1500</span>
         </h2>
@@ -38,7 +37,7 @@ function Incomes() {
                       category={category}
                       amount={amount}
                       deleteIncome={deleteIncome}
-                      getIncome={getIncome}
+                      updateIncome={updateIncome}
                     />
                   );
                 })

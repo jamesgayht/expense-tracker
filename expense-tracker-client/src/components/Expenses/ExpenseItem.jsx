@@ -12,18 +12,18 @@ import {
   trash,
   work,
 } from "../../utils/icons";
-import IncomeEditForm from "./IncomeEditForm";
+import ExpenseEditForm from "./ExpenseEditForm";
 
-function IncomeItem({
+function ExpenseItem({
   id,
   name,
   amount,
   date,
   category,
-  deleteIncome,
-  updateIncome,
+  deleteExpense,
+  updateExpense,
 }) {
-  const [selectedIncome, setSelectedIncome] = useState(null);
+  const [selectedExpense, setSelectedExpense] = useState(null);
 
   const categoryIcon = (category) => {
     switch (category) {
@@ -49,15 +49,15 @@ function IncomeItem({
 
   const handleDelete = async (id) => {
     try {
-      await deleteIncome({ id: id });
+      await deleteExpense({ id: id });
     } catch (error) {
-      console.info(">>> error deleting income: ", error);
+      console.info(">>> error deleting expense: ", error);
       window.alert("An error, please try again.");
     }
   };
 
   const handleEdit = (date, name, category, amount) => {
-    setSelectedIncome({
+    setSelectedExpense({
       date: date.substring(0, 10),
       name: name,
       category: category,
@@ -66,7 +66,7 @@ function IncomeItem({
   };
 
   return (
-    <IncomeItemStyled>
+    <ExpenseItemStyled>
       <div className="icon">{category ? categoryIcon(category) : ""}</div>
       <div className="content">
         <h5>{name}</h5>
@@ -91,6 +91,7 @@ function IncomeItem({
         >
           {edit}
         </button>
+
         <button
           className="trash-btn"
           onClick={() => {
@@ -102,21 +103,21 @@ function IncomeItem({
       </div>
 
       <div className="edit-form-container">
-        {selectedIncome ? (
-          <IncomeEditForm
+        {selectedExpense ? (
+          <ExpenseEditForm
             id={id}
-            selectedIncome={selectedIncome}
-            updateIncome={updateIncome}
+            selectedExpense={selectedExpense}
+            updateExpense={updateExpense}
           />
         ) : (
           ""
         )}
       </div>
-    </IncomeItemStyled>
+    </ExpenseItemStyled>
   );
 }
 
-const IncomeItemStyled = styled.div`
+const ExpenseItemStyled = styled.div`
   background: #fcf6f9;
   border: 2px solid #ffffff;
   box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
@@ -182,10 +183,11 @@ const IncomeItemStyled = styled.div`
     }
   }
 
-  .trash-btn, .edit-btn {
+  .edit-btn,
+  .trash-btn {
     padding: 0.4rem .6rem;
     margin: 0.4rem;
   }
 `;
 
-export default IncomeItem;
+export default ExpenseItem;

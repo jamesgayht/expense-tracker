@@ -74,6 +74,54 @@ const incomesController = {
         .json({ msg: "An error occured, please try again" });
     }
   },
+
+  updateIncome: async (req, res) => {
+    const userID = res.locals.authUserID;
+    const data = req.body;
+    let record = null;
+
+    const incomeInput = { ...req.body, userID: userID };
+
+    const validationResult =
+      incomeItemValidator.createIncomeItemSchema.validate(incomeInput);
+
+    if (validationResult.error)
+      return res.status(400).json({ msg: validationResult.error });
+
+    try {
+      record = await incomeItemModel.findById(req.params.recordID);
+    } catch (error) {
+      console.error(">>> update income error: ", error);
+      return res
+        .status(400)
+        .json({ msg: "An error occured, please try again" });
+    }
+
+    if (!record) {
+      res.statusCode = 404;
+      return res.json({ msg: "record not found" });
+    }
+
+    try {
+      await incomeItemModel.updateOne(
+        {
+          _id: req.params.recordID,
+        },
+        {
+          date: data.date,
+          name: data.name,
+          category: data.category,
+          amount: data.amount,
+        }
+      );
+      return res.status(200).json({ msg: "Income updated successfully" });
+    } catch (error) {
+      console.error(">>> update income error: ", error);
+      return res
+        .status(400)
+        .json({ msg: "An error occured, please try again" });
+    }
+  },
 };
 
 module.exports = incomesController;

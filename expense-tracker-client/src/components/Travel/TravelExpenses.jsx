@@ -1,3 +1,111 @@
+import React, { useEffect } from "react";
+import { styled } from "styled-components";
+import { InnerLayout } from "../../styles/Layouts";
+import { useGlobalContext } from "../../context/globalContext";
+import TravelItem from "./TravelItem";
+import TravelForm from "./TravelForm";
+
+function Trips() {
+  const {
+    trips,
+    getTravelExpenses,
+    deleteTravelExpense,
+    updateTravelExpense,
+    getCurrentMonth,
+    month,
+  } = useGlobalContext();
+
+  useEffect(() => {
+    getTravelExpenses();
+    getCurrentMonth();
+  }, []);
+
+  return (
+    <TripsStyled>
+      <InnerLayout>
+        <h2 className="total-travel-expense">
+          Total Travel Expense for {month}: <span>$0</span>
+        </h2>
+        <div className="travel-expense-content">
+          <div className="form-container">
+            <TravelForm />
+          </div>
+
+          <div className="travel-expenses">
+            {trips
+              ? trips.map((travelExpense, idx) => {
+                  const {
+                    _id,
+                    name,
+                    date,
+                    category,
+                    amount,
+                    ccy,
+                    baseCCY,
+                    fx,
+                    trip,
+                  } = travelExpense;
+                  return (
+                    <TravelItem
+                      key={_id}
+                      id={_id}
+                      name={name}
+                      date={date}
+                      category={category}
+                      amount={amount}
+                      ccy={ccy}
+                      baseCCY={baseCCY}
+                      fx={fx}
+                      trip={trip}
+                      deleteTravelExpense={deleteTravelExpense}
+                      updateTravelExpense={updateTravelExpense}
+                    />
+                  );
+                })
+              : ""}
+          </div>
+        </div>
+      </InnerLayout>
+    </TripsStyled>
+  );
+}
+
+const TripsStyled = styled.div`
+  display: flex;
+  overflow: auto;
+
+  .total-travel-expense {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #fcf6f9;
+    border: 2px solid #ffffff;
+    border-radius: 20px;
+    padding: 1rem;
+    margin: 1rem 0;
+    font-size: 2rem;
+    gap: 0.5rem;
+    color: var(--primary-color);
+
+    span {
+      font-size: 2.5rem;
+      font-weight: 800;
+      color: var(--color-accent);
+    }
+  }
+
+  .travel-expense-content {
+    display: flex;
+    gap: 2rem;
+    .travel-expenses {
+      flex: 1;
+    }
+  }
+`;
+
+export default Trips;
+
+  /*
 import { useContext, useEffect, useState, useRef } from "react";
 import { AuthContext } from "../auth/AuthProvider";
 import axios from "axios";
@@ -475,486 +583,486 @@ export default function Travel() {
           </label>
         </div>
       </div>
-
+*/
       {/* If Existing is selected, then the existing trip name drop down will appear */}
-      <div>
-        {/* {formData.tripType === "existing" && ( */}
-        {tripType === "existing" && (
-          <div>
-            <label htmlFor="trip">Existing Trip Name:</label>
-            <select
-              name="trip"
-              id="trip"
-              value={tripName}
-              onChange={(e) => {
-                setTripName(e.target.value);
-                handleFilterExpenses(e.target.value); {/* If we don't put this, then the travel expenses wouldn't change when we click on existing trip */}
-              }}
-            >
-              <option value="">Select Trip</option>
-              {trips.map((trip) => (
-                <option value={trip} key={trip}>
-                  {trip}
-                </option>
-              ))}
-            </select>
-            <form onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="date">Date:</label>
-                <input
-                  type="date"
-                  id="date"
-                  name="date"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "date");
-                  }}
-                />
-              </div>
-              <div>
-                <label htmlFor="name">Name:</label>
-                <input
-                  type="type"
-                  id="name"
-                  name="name"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "name");
-                  }}
-                />
-              </div>
-              <div>
-                <label htmlFor="category">Category:</label>
-                <select
-                  name="category"
-                  id="category"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "category");
-                  }}
-                >
+//       <div>
+//         {/* {formData.tripType === "existing" && ( */}
+//         {tripType === "existing" && (
+//           <div>
+//             <label htmlFor="trip">Existing Trip Name:</label>
+//             <select
+//               name="trip"
+//               id="trip"
+//               value={tripName}
+//               onChange={(e) => {
+//                 setTripName(e.target.value);
+//                 handleFilterExpenses(e.target.value); {/* If we don't put this, then the travel expenses wouldn't change when we click on existing trip */}
+//               }}
+//             >
+//               <option value="">Select Trip</option>
+//               {trips.map((trip) => (
+//                 <option value={trip} key={trip}>
+//                   {trip}
+//                 </option>
+//               ))}
+//             </select>
+//             <form onSubmit={handleSubmit}>
+//               <div>
+//                 <label htmlFor="date">Date:</label>
+//                 <input
+//                   type="date"
+//                   id="date"
+//                   name="date"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "date");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="name">Name:</label>
+//                 <input
+//                   type="type"
+//                   id="name"
+//                   name="name"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "name");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="category">Category:</label>
+//                 <select
+//                   name="category"
+//                   id="category"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "category");
+//                   }}
+//                 >
                   
-                  <option value="placeholder" disabled={true} selected>
-                    Select...
-                  </option>
-                  {categoryOptions.map(function (cat, i) {
-                    return (
-                      <option value={cat.value} key={i}>
-                        {cat.label}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="amount">Amount in Local Currency:</label>
-                <input
-                  type="number"
-                  id="amount"
-                  name="amount"
-                  step="0.01"
-                  required
-                  onInput={(e) => {
-                    limitTwoDP(e);
-                  }}
-                  onChange={(e) => {
-                    handleFormChange(e, "amount");
-                  }}
-                />
-              </div>
-              <div>
-                <label htmlFor="ccy">Local Currency:</label>
-                <select
-                  name="ccy"
-                  value={currency}
-                  id="ccy"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "ccy");
-                  }}
-                >
-                  <option value="placeholder" disabled={true} selected>
-                    Select...
-                  </option>
-                  {currencyOptions.map(function (ccy, i) {
-                    return (
-                      <option value={ccy.value} key={i}>
-                        {ccy.label}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="baseCCY">Base Currency:</label>
-                <select
-                  name="baseCCY"
-                  id="baseCCY"
-                  value={baseCCY}
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "baseCCY");
-                  }}
-                >
-                  <option value="placeholder" disabled={true} selected>
-                    Select...
-                  </option>
-                  {currencyOptions.map(function (ccy, i) {
-                    return (
-                      <option value={ccy.value} key={i}>
-                        {ccy.label}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="fx">Exchange Rate: </label>
-                {/* 1 local ccy : xx base ccy. xx will be the amount to key in*/}
-                <input
-                  type="number"
-                  id="fx"
-                  name="fx"
-                  step="any"
-                  value={fx}
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "fx");
-                  }}
-                />
-              </div>
-              <div>
-                <label htmlFor="trip">Trip Name:</label>
-                <input
-                  type="type"
-                  id="trip"
-                  name="trip"
-                  value={tripName}
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "trip");
-                  }}
-                />
-              </div>
-              <div>
-                <button type="submit">Add Expense</button>
-              </div>
-            </form>
-          </div>
-        )}
+//                   <option value="placeholder" disabled={true} selected>
+//                     Select...
+//                   </option>
+//                   {categoryOptions.map(function (cat, i) {
+//                     return (
+//                       <option value={cat.value} key={i}>
+//                         {cat.label}
+//                       </option>
+//                     );
+//                   })}
+//                 </select>
+//               </div>
+//               <div>
+//                 <label htmlFor="amount">Amount in Local Currency:</label>
+//                 <input
+//                   type="number"
+//                   id="amount"
+//                   name="amount"
+//                   step="0.01"
+//                   required
+//                   onInput={(e) => {
+//                     limitTwoDP(e);
+//                   }}
+//                   onChange={(e) => {
+//                     handleFormChange(e, "amount");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="ccy">Local Currency:</label>
+//                 <select
+//                   name="ccy"
+//                   value={currency}
+//                   id="ccy"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "ccy");
+//                   }}
+//                 >
+//                   <option value="placeholder" disabled={true} selected>
+//                     Select...
+//                   </option>
+//                   {currencyOptions.map(function (ccy, i) {
+//                     return (
+//                       <option value={ccy.value} key={i}>
+//                         {ccy.label}
+//                       </option>
+//                     );
+//                   })}
+//                 </select>
+//               </div>
+//               <div>
+//                 <label htmlFor="baseCCY">Base Currency:</label>
+//                 <select
+//                   name="baseCCY"
+//                   id="baseCCY"
+//                   value={baseCCY}
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "baseCCY");
+//                   }}
+//                 >
+//                   <option value="placeholder" disabled={true} selected>
+//                     Select...
+//                   </option>
+//                   {currencyOptions.map(function (ccy, i) {
+//                     return (
+//                       <option value={ccy.value} key={i}>
+//                         {ccy.label}
+//                       </option>
+//                     );
+//                   })}
+//                 </select>
+//               </div>
+//               <div>
+//                 <label htmlFor="fx">Exchange Rate: </label>
+//                 {/* 1 local ccy : xx base ccy. xx will be the amount to key in*/}
+//                 <input
+//                   type="number"
+//                   id="fx"
+//                   name="fx"
+//                   step="any"
+//                   value={fx}
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "fx");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="trip">Trip Name:</label>
+//                 <input
+//                   type="type"
+//                   id="trip"
+//                   name="trip"
+//                   value={tripName}
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "trip");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <button type="submit">Add Expense</button>
+//               </div>
+//             </form>
+//           </div>
+//         )}
 
-        {/* If Trip type is not existing*/}
-        {tripType !== "existing" && (
-          <div>
-            <form onSubmit={handleSubmit}>
-              <div>
-                <label htmlFor="date">Date:</label>
-                <input
-                  type="date"
-                  id="date"
-                  name="date"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "date");
-                  }}
-                />
-              </div>
-              <div>
-                <label htmlFor="name">Name:</label>
-                <input
-                  type="type"
-                  id="name"
-                  name="name"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "name");
-                  }}
-                />
-              </div>
-              <div>
-                <label htmlFor="category">Category:</label>
-                <select
-                  name="category"
-                  id="category"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "category");
-                  }}
-                >
+//         {/* If Trip type is not existing*/}
+//         {tripType !== "existing" && (
+//           <div>
+//             <form onSubmit={handleSubmit}>
+//               <div>
+//                 <label htmlFor="date">Date:</label>
+//                 <input
+//                   type="date"
+//                   id="date"
+//                   name="date"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "date");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="name">Name:</label>
+//                 <input
+//                   type="type"
+//                   id="name"
+//                   name="name"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "name");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="category">Category:</label>
+//                 <select
+//                   name="category"
+//                   id="category"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "category");
+//                   }}
+//                 >
                   
-                  <option value="placeholder" disabled={true} selected>
-                    Select...
-                  </option>
-                  {categoryOptions.map(function (cat, i) {
-                    return (
-                      <option value={cat.value} key={i}>
-                        {cat.label}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="amount">Amount in Local Currency:</label>
-                <input
-                  type="number"
-                  id="amount"
-                  name="amount"
-                  step="0.01"
-                  required
-                  onInput={(e) => {
-                    limitTwoDP(e);
-                  }}
-                  onChange={(e) => {
-                    handleFormChange(e, "amount");
-                  }}
-                />
-              </div>
-              <div>
-                <label htmlFor="ccy">Local Currency:</label>
-                <select
-                  name="ccy"
-                  id="ccy"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "ccy");
-                  }}
-                >
-                  <option value="placeholder" disabled={true} selected>
-                    Select...
-                  </option>
-                  {currencyOptions.map(function (ccy, i) {
-                    return (
-                      <option value={ccy.value} key={i}>
-                        {ccy.label}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="baseCCY">Base Currency:</label>
-                <select
-                  name="baseCCY"
-                  id="baseCCY"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "baseCCY");
-                  }}
-                >
-                  <option value="placeholder" disabled={true} selected>
-                    Select...
-                  </option>
-                  {currencyOptions.map(function (ccy, i) {
-                    return (
-                      <option value={ccy.value} key={i}>
-                        {ccy.label}
-                      </option>
-                    );
-                  })}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="fx">Exchange Rate: </label>{" "}
-                {/* 1 local ccy : xx base ccy. xx will be the amount to key in*/}
-                <input
-                  type="number"
-                  id="fx"
-                  name="fx"
-                  step="any"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "fx");
-                  }}
-                />
-              </div>
-              <div>
-                <label htmlFor="trip">Trip Name:</label>
-                <input
-                  type="type"
-                  id="trip"
-                  name="trip"
-                  required
-                  onChange={(e) => {
-                    handleFormChange(e, "trip");
-                  }}
-                />
-              </div>
-              <div>
-                <button type="submit">Add Expense</button>
-              </div>
-            </form>
-          </div>
-        )}
-      </div>
+//                   <option value="placeholder" disabled={true} selected>
+//                     Select...
+//                   </option>
+//                   {categoryOptions.map(function (cat, i) {
+//                     return (
+//                       <option value={cat.value} key={i}>
+//                         {cat.label}
+//                       </option>
+//                     );
+//                   })}
+//                 </select>
+//               </div>
+//               <div>
+//                 <label htmlFor="amount">Amount in Local Currency:</label>
+//                 <input
+//                   type="number"
+//                   id="amount"
+//                   name="amount"
+//                   step="0.01"
+//                   required
+//                   onInput={(e) => {
+//                     limitTwoDP(e);
+//                   }}
+//                   onChange={(e) => {
+//                     handleFormChange(e, "amount");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="ccy">Local Currency:</label>
+//                 <select
+//                   name="ccy"
+//                   id="ccy"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "ccy");
+//                   }}
+//                 >
+//                   <option value="placeholder" disabled={true} selected>
+//                     Select...
+//                   </option>
+//                   {currencyOptions.map(function (ccy, i) {
+//                     return (
+//                       <option value={ccy.value} key={i}>
+//                         {ccy.label}
+//                       </option>
+//                     );
+//                   })}
+//                 </select>
+//               </div>
+//               <div>
+//                 <label htmlFor="baseCCY">Base Currency:</label>
+//                 <select
+//                   name="baseCCY"
+//                   id="baseCCY"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "baseCCY");
+//                   }}
+//                 >
+//                   <option value="placeholder" disabled={true} selected>
+//                     Select...
+//                   </option>
+//                   {currencyOptions.map(function (ccy, i) {
+//                     return (
+//                       <option value={ccy.value} key={i}>
+//                         {ccy.label}
+//                       </option>
+//                     );
+//                   })}
+//                 </select>
+//               </div>
+//               <div>
+//                 <label htmlFor="fx">Exchange Rate: </label>{" "}
+//                 {/* 1 local ccy : xx base ccy. xx will be the amount to key in*/}
+//                 <input
+//                   type="number"
+//                   id="fx"
+//                   name="fx"
+//                   step="any"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "fx");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <label htmlFor="trip">Trip Name:</label>
+//                 <input
+//                   type="type"
+//                   id="trip"
+//                   name="trip"
+//                   required
+//                   onChange={(e) => {
+//                     handleFormChange(e, "trip");
+//                   }}
+//                 />
+//               </div>
+//               <div>
+//                 <button type="submit">Add Expense</button>
+//               </div>
+//             </form>
+//           </div>
+//         )}
+//       </div>
 
-      <div>
-        <h2>Filter By Trip:</h2>
-        <select
-          name="filter"
-          id="filter"
-          onChange={(e) => handleFilterExpenses(e.target.value)}
-        >
-          <option value="">Select Trip (All Trips if unselected)</option>
-          {trips.map((trip) => (
-            <option value={trip} key={trip}>
-              {trip}
-            </option>
-          ))}
-        </select>
-      </div>
+//       <div>
+//         <h2>Filter By Trip:</h2>
+//         <select
+//           name="filter"
+//           id="filter"
+//           onChange={(e) => handleFilterExpenses(e.target.value)}
+//         >
+//           <option value="">Select Trip (All Trips if unselected)</option>
+//           {trips.map((trip) => (
+//             <option value={trip} key={trip}>
+//               {trip}
+//             </option>
+//           ))}
+//         </select>
+//       </div>
 
-      <div>
-        <h2>Travel Expenses:</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Amount in Local Currency</th>
-              <th>Local Currency</th>
-              <th>Amount in Base Currency</th>
-              <th>Base Currency</th>
-              <th>Exchange Rate</th>
-            </tr>
-          </thead>
-          <tbody>
-            {expenses.map((expense) => (
-              <tr key={expense._id}>
-                <td>{new Date(expense.date).toLocaleDateString("en-GB")}</td>{" "}
-                {/* convert it to javascript date object first so that we can use toLocaleDateString() */}
-                <td>{expense.name}</td>
-                <td>{expense.category}</td>
-                <td>{expense.amount}</td>
-                <td>{expense.ccy}</td>
-                <td>{expense.baseAmount}</td>
-                <td>{expense.baseCCY}</td>
-                <td>{expense.fx}</td>
-                <td>
-                  <button onClick={() => handleEdit(expense)}>Edit</button>
-                </td>
-                <td>
-                  <button onClick={() => handleDelete(expense._id)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+//       <div>
+//         <h2>Travel Expenses:</h2>
+//         <table>
+//           <thead>
+//             <tr>
+//               <th>Date</th>
+//               <th>Name</th>
+//               <th>Category</th>
+//               <th>Amount in Local Currency</th>
+//               <th>Local Currency</th>
+//               <th>Amount in Base Currency</th>
+//               <th>Base Currency</th>
+//               <th>Exchange Rate</th>
+//             </tr>
+//           </thead>
+//           <tbody>
+//             {expenses.map((expense) => (
+//               <tr key={expense._id}>
+//                 <td>{new Date(expense.date).toLocaleDateString("en-GB")}</td>{" "}
+//                 {/* convert it to javascript date object first so that we can use toLocaleDateString() */}
+//                 <td>{expense.name}</td>
+//                 <td>{expense.category}</td>
+//                 <td>{expense.amount}</td>
+//                 <td>{expense.ccy}</td>
+//                 <td>{expense.baseAmount}</td>
+//                 <td>{expense.baseCCY}</td>
+//                 <td>{expense.fx}</td>
+//                 <td>
+//                   <button onClick={() => handleEdit(expense)}>Edit</button>
+//                 </td>
+//                 <td>
+//                   <button onClick={() => handleDelete(expense._id)}>
+//                     Delete
+//                   </button>
+//                 </td>
+//               </tr>
+//             ))}
+//           </tbody>
+//         </table>
+//       </div>
 
-      {/* Edit Expense will only appear when edit is clicked*/}
-      {selectedExpense && (
-        <div>
-          <h2>Edit Expense</h2>
-          <form onSubmit={updateExpense}>
-            <div>
-              <label htmlFor="edit-date">Date:</label>
-              <input
-                type="date"
-                id="edit-date"
-                name="date"
-                value={formData.date}
-                onChange={(e) => handleFormChange(e, "date")}
-              />
-            </div>
-            <div>
-              <label htmlFor="edit-name">Name:</label>
-              <input
-                type="text"
-                id="edit-name"
-                name="name"
-                value={formData.name}
-                onChange={(e) => handleFormChange(e, "name")}
-              />
-            </div>
-            <div>
-              <label htmlFor="edit-category">Category:</label>
-              <select
-                id="edit-category"
-                name="category"
-                value={formData.category}
-                onChange={(e) => handleFormChange(e, "category")}
-              >
-                {categoryOptions.map((option) => (
-                  <option value={option.value} key={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="edit-amount">Amount:</label>
-              <input
-                type="number"
-                id="edit-amount"
-                name="amount"
-                step="0.01"
-                value={formData.amount}
-                required
-                onInput={(e) => {
-                  limitTwoDP(e);
-                }}
-                onChange={(e) => {
-                  handleFormChange(e, "amount");
-                }}
-              />
-            </div>
-            <div>
-              <label htmlFor="edit-fx">Exchange Rate:</label>{" "}
-              {/* exchange rate shouldn't be limited to 2dp */}
-              <input
-                type="number"
-                id="edit-fx"
-                name="fx"
-                step="any"
-                value={formData.fx}
-                required
-                onChange={(e) => {
-                  handleFormChange(e, "fx");
-                }}
-              />
-            </div>
-            <div>
-              <label htmlFor="edit-ccy">Local Currency:</label>
-              <select
-                id="edit-ccy"
-                name="ccy"
-                value={formData.ccy}
-                onChange={(e) => handleFormChange(e, "ccy")}
-              >
-                {currencyOptions.map((option) => (
-                  <option value={option.value} key={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor="edit-baseCCY">Base Currency:</label>
-              <select
-                id="edit-baseCCY"
-                name="baseCCY"
-                value={formData.baseCCY}
-                onChange={(e) => handleFormChange(e, "baseCCY")}
-              >
-                {currencyOptions.map((option) => (
-                  <option value={option.value} key={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-              {/* {console.log("heres to check",formData.baseCCY)} */}
-            </div>
-            <div>
-              <button type="submit">Save</button>
-              <button onClick={() => setSelectedExpense(null)}>Cancel</button>
-            </div>
-          </form>
-        </div>
-      )}
-    </div>
-  );
-}
+//       {/* Edit Expense will only appear when edit is clicked*/}
+//       {selectedExpense && (
+//         <div>
+//           <h2>Edit Expense</h2>
+//           <form onSubmit={updateExpense}>
+//             <div>
+//               <label htmlFor="edit-date">Date:</label>
+//               <input
+//                 type="date"
+//                 id="edit-date"
+//                 name="date"
+//                 value={formData.date}
+//                 onChange={(e) => handleFormChange(e, "date")}
+//               />
+//             </div>
+//             <div>
+//               <label htmlFor="edit-name">Name:</label>
+//               <input
+//                 type="text"
+//                 id="edit-name"
+//                 name="name"
+//                 value={formData.name}
+//                 onChange={(e) => handleFormChange(e, "name")}
+//               />
+//             </div>
+//             <div>
+//               <label htmlFor="edit-category">Category:</label>
+//               <select
+//                 id="edit-category"
+//                 name="category"
+//                 value={formData.category}
+//                 onChange={(e) => handleFormChange(e, "category")}
+//               >
+//                 {categoryOptions.map((option) => (
+//                   <option value={option.value} key={option.value}>
+//                     {option.label}
+//                   </option>
+//                 ))}
+//               </select>
+//             </div>
+//             <div>
+//               <label htmlFor="edit-amount">Amount:</label>
+//               <input
+//                 type="number"
+//                 id="edit-amount"
+//                 name="amount"
+//                 step="0.01"
+//                 value={formData.amount}
+//                 required
+//                 onInput={(e) => {
+//                   limitTwoDP(e);
+//                 }}
+//                 onChange={(e) => {
+//                   handleFormChange(e, "amount");
+//                 }}
+//               />
+//             </div>
+//             <div>
+//               <label htmlFor="edit-fx">Exchange Rate:</label>{" "}
+//               {/* exchange rate shouldn't be limited to 2dp */}
+//               <input
+//                 type="number"
+//                 id="edit-fx"
+//                 name="fx"
+//                 step="any"
+//                 value={formData.fx}
+//                 required
+//                 onChange={(e) => {
+//                   handleFormChange(e, "fx");
+//                 }}
+//               />
+//             </div>
+//             <div>
+//               <label htmlFor="edit-ccy">Local Currency:</label>
+//               <select
+//                 id="edit-ccy"
+//                 name="ccy"
+//                 value={formData.ccy}
+//                 onChange={(e) => handleFormChange(e, "ccy")}
+//               >
+//                 {currencyOptions.map((option) => (
+//                   <option value={option.value} key={option.value}>
+//                     {option.label}
+//                   </option>
+//                 ))}
+//               </select>
+//             </div>
+//             <div>
+//               <label htmlFor="edit-baseCCY">Base Currency:</label>
+//               <select
+//                 id="edit-baseCCY"
+//                 name="baseCCY"
+//                 value={formData.baseCCY}
+//                 onChange={(e) => handleFormChange(e, "baseCCY")}
+//               >
+//                 {currencyOptions.map((option) => (
+//                   <option value={option.value} key={option.value}>
+//                     {option.label}
+//                   </option>
+//                 ))}
+//               </select>
+//               {/* {console.log("heres to check",formData.baseCCY)} */}
+//             </div>
+//             <div>
+//               <button type="submit">Save</button>
+//               <button onClick={() => setSelectedExpense(null)}>Cancel</button>
+//             </div>
+//           </form>
+//         </div>
+//       )}
+//     </div>
+//   );
+// }

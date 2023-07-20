@@ -23,7 +23,7 @@ export default function Expenses() {
             })
             .then((res) => {
                 console.info(">>> get expenses res: ", res);
-                setTrips(res.data);
+                // setTrips(res.data);
             })
             .catch((error) => {
                 console.error(">>> get expenses error: ", error);

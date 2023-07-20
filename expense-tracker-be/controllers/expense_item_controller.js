@@ -55,8 +55,18 @@ const expensesControllers = {
 
   // updating expense record within the app
   updateRecord: async (req, res) => {
+    const userID = res.locals.authUserID;
     const data = req.body;
     let record = null;
+
+    const expenseInput = { ...req.body, userID: userID };
+
+    // validate expense data
+    const validationResult =
+      expenseItemValidator.createExpenseItemSchema.validate(expenseInput);
+
+    if (validationResult.error)
+      return res.status(400).json({ msg: validationResult.error });
 
     // getting expense record from MongoDB. If it does not eist, return error code 404
     try {
@@ -64,17 +74,17 @@ const expensesControllers = {
     } catch (err) {
       console.log(err);
       res.statusCode = 500;
-      return res.json();
+      return res.json({ msg: "An error occured, please try again" });
     }
 
     if (!record) {
       res.statusCode = 404;
-      return res.json();
+      return res.json({ msg: "record not found" });
     }
 
     try {
       await expenseItemModel.updateOne(
-        { _id: req.params.itemID },
+        { _id: req.params.recordID },
         {
           date: data.date,
           name: data.name,
@@ -83,10 +93,11 @@ const expensesControllers = {
         } // check how to update timestamp - is it part of the function parameters?
       );
     } catch (err) {
+      console.error(">>> update expense error: ", err);
       res.statusCode = 500;
-      return res.json();
+      return res.json({ msg: "An error occured, please try again" });
     }
-    res.json({ msg: "expense item updated successfully" });
+    return res.status(200).json({ msg: "expense item updated successfully" });
   },
 
   // calling an expense record for display
@@ -121,12 +132,12 @@ const expensesControllers = {
       expenseRecord = await expenseItemModel.findById(req.params.recordID);
     } catch (err) {
       res.statusCode = 500;
-      return res.json();
+      return res.json({ msg: "An error occured, please try again" });
     }
 
     if (!expenseRecord) {
       res.statusCode = 404;
-      return res.json();
+      return res.json({ msg: "An error occured, please try again" });
     }
 
     try {
