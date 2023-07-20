@@ -15,6 +15,7 @@ import { GlobalProvider } from "./context/globalContext";
 import App from "./App";
 import Travel from "./components/TravelExpenses";
 import Expenses from "./components/Expenses";
+import Travel from "./components/Travel/TravelExpenses";
 
 const router = createBrowserRouter([
   {
