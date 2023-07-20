@@ -14,9 +14,8 @@ function Navigation({ active, setActive }) {
       <div className="user-container">
         <img src={avatar} alt="" />
         <div className="text">
-
           {user ? <h2>{user.name}</h2> : ""}
-          
+
           <p>Your Money</p>
         </div>
       </div>

@@ -5,7 +5,7 @@ const authMiddleware = require("../middlewares/auth_middleware");
 
 router.get("/displayAll", authMiddleware, expensesControllers.listRecords);
 router.post("/insertExpense", authMiddleware, expensesControllers.createRecord);
-router.post("/update/:recordID", expensesControllers.updateRecord);
+router.post("/update/:recordID", authMiddleware, expensesControllers.updateRecord);
 router.get("/displayOne/:recordID", expensesControllers.getRecord);
 router.post("/delete/:recordID", expensesControllers.deleteRecord);
 

@@ -1,50 +1,64 @@
 import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import { InnerLayout } from "../../styles/Layouts";
-import ExpenseForm from "./ExpenseForm";
-import ExpenseItem from "./ExpenseItem";
 import { useGlobalContext } from "../../context/globalContext";
+import TravelItem from "./TravelItem";
+import TravelForm from "./TravelForm";
 
-function Expenses() {
+function Trips() {
   const {
-    expenses,
-    getExpenses,
-    updateExpense,
-    deleteExpense,
+    trips,
+    getTravelExpenses,
+    deleteTravelExpense,
+    updateTravelExpense,
     getCurrentMonth,
     month,
   } = useGlobalContext();
 
   useEffect(() => {
-    getExpenses();
+    getTravelExpenses();
     getCurrentMonth();
   }, []);
 
   return (
-    <ExpensesStyled>
+    <TripsStyled>
       <InnerLayout>
-        <h2 className="total-expense">
-          Total Expense for {month}: <span>$1500</span>
+        <h2 className="total-travel-expense">
+          Total Travel Expense for {month}: <span>$0</span>
         </h2>
-        <div className="expense-content">
+        <div className="travel-expense-content">
           <div className="form-container">
-            <ExpenseForm />
+            <TravelForm />
           </div>
 
-          <div className="expenses">
-            {expenses
-              ? expenses.map((expense, idx) => {
-                  const { _id, name, date, category, amount } = expense;
+          <div className="travel-expenses">
+            {trips
+              ? trips.map((travelExpense, idx) => {
+                  const {
+                    _id,
+                    name,
+                    date,
+                    category,
+                    amount,
+                    ccy,
+                    baseCCY,
+                    fx,
+                    trip,
+                  } = travelExpense;
                   return (
-                    <ExpenseItem
+                    <TravelItem
                       key={_id}
                       id={_id}
                       name={name}
                       date={date}
                       category={category}
                       amount={amount}
-                      deleteExpense={deleteExpense}
-                      updateExpense={updateExpense}
+                      ccy={ccy}
+                      baseCCY={baseCCY}
+                      fx={fx}
+                      trip={trip}
+                      deleteTravelExpense={deleteTravelExpense}
+                      updateTravelExpense={updateTravelExpense}
                     />
                   );
                 })
@@ -52,15 +66,15 @@ function Expenses() {
           </div>
         </div>
       </InnerLayout>
-    </ExpensesStyled>
+    </TripsStyled>
   );
 }
 
-const ExpensesStyled = styled.div`
+const TripsStyled = styled.div`
   display: flex;
   overflow: auto;
 
-  .total-expense {
+  .total-travel-expense {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -80,13 +94,13 @@ const ExpensesStyled = styled.div`
     }
   }
 
-  .expense-content {
+  .travel-expense-content {
     display: flex;
     gap: 2rem;
-    .expenses {
+    .travel-expenses {
       flex: 1;
     }
   }
 `;
 
-export default Expenses;
+export default Trips;

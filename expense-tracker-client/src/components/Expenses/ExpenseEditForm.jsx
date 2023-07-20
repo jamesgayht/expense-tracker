@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useGlobalContext } from "../../context/globalContext";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
 
-function IncomeForm() {
-  const { addIncome, getIncome } = useGlobalContext();
+function ExpenseEditForm({ id, selectedExpense, updateExpense }) {
   const [formData, setFormData] = useState({
-    date: "",
-    name: "",
-    category: "",
-    amount: null,
+    date: selectedExpense.date,
+    name: selectedExpense.name,
+    category: selectedExpense.category,
+    amount: selectedExpense.amount,
   });
 
   const handleFormChange = (e, fieldName) => {
@@ -23,16 +19,10 @@ function IncomeForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addIncome(formData);
-      setFormData({
-        date: "",
-        name: "",
-        category: "",
-        amount: null,
-      });
-      console.log("submitting income");
+      await updateExpense(id, formData);
+      window.location.reload();
     } catch (error) {
-      console.info(">>> error adding income: ", error);
+      console.info(">>> error updating expense: ", error);
       window.alert("An error, please try again.");
     }
   };
@@ -46,21 +36,25 @@ function IncomeForm() {
   };
 
   const categoryOptions = [
-    { value: "salary", label: "Salary" },
-    { value: "freelance", label: "Freelance" },
-    { value: "allowance", label: "Allowance" },
-    { value: "investments", label: "Investments" },
+    { value: "f&b", label: "F&B" },
+    { value: "transport", label: "Transport" },
+    { value: "accommodation", label: "Accommodation" },
+    { value: "groceries", label: "Groceries" },
+    { value: "shopping", label: "Shopping" },
+    { value: "entertainment", label: "Entertainment" },
+    { value: "health & fitness", label: "Health & Fitness" },
     { value: "others", label: "Others" },
   ];
 
   return (
-    <IncomeFormStyled onSubmit={handleSubmit}>
+    <ExpenseEditFormStyled onSubmit={handleSubmit}>
       <div className="input-control">
         <input
           id="date"
           name="date"
           type="date"
           required
+          value={formData.date}
           onChange={(e) => {
             handleFormChange(e, "date");
           }}
@@ -73,6 +67,7 @@ function IncomeForm() {
           name="name"
           placeholder="Income Title"
           required
+          value={formData.name}
           onChange={(e) => {
             handleFormChange(e, "name");
           }}
@@ -83,6 +78,7 @@ function IncomeForm() {
           name="category"
           id="category"
           required
+          value={formData.category}
           onChange={(e) => {
             handleFormChange(e, "category");
           }}
@@ -108,6 +104,7 @@ function IncomeForm() {
           step="0.01"
           placeholder="Amount"
           required
+          value={formData.amount}
           onInput={(e) => {
             limitTwoDP(e);
           }}
@@ -117,13 +114,13 @@ function IncomeForm() {
         />
       </div>
       <div className="submit-btn">
-        <button type="submit">Add Income</button>
+        <button type="submit">Update</button>
       </div>
-    </IncomeFormStyled>
+    </ExpenseEditFormStyled>
   );
 }
 
-const IncomeFormStyled = styled.form`
+const ExpenseEditFormStyled = styled.form`
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -165,4 +162,4 @@ const IncomeFormStyled = styled.form`
   }
 `;
 
-export default IncomeForm;
+export default ExpenseEditForm;

@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
-import { useGlobalContext } from "../../context/globalContext";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
 
-function IncomeForm() {
-  const { addIncome, getIncome } = useGlobalContext();
+function IncomeEditForm({ id, selectedIncome, updateIncome }) {
   const [formData, setFormData] = useState({
-    date: "",
-    name: "",
-    category: "",
-    amount: null,
+    date: selectedIncome.date,
+    name: selectedIncome.name,
+    category: selectedIncome.category,
+    amount: selectedIncome.amount,
   });
 
   const handleFormChange = (e, fieldName) => {
@@ -23,16 +19,10 @@ function IncomeForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addIncome(formData);
-      setFormData({
-        date: "",
-        name: "",
-        category: "",
-        amount: null,
-      });
-      console.log("submitting income");
+      await updateIncome(id, formData);
+      window.location.reload();
     } catch (error) {
-      console.info(">>> error adding income: ", error);
+      console.info(">>> error updating income: ", error);
       window.alert("An error, please try again.");
     }
   };
@@ -54,13 +44,14 @@ function IncomeForm() {
   ];
 
   return (
-    <IncomeFormStyled onSubmit={handleSubmit}>
+    <IncomeEditFormStyled onSubmit={handleSubmit}>
       <div className="input-control">
         <input
           id="date"
           name="date"
           type="date"
           required
+          value={formData.date}
           onChange={(e) => {
             handleFormChange(e, "date");
           }}
@@ -73,6 +64,7 @@ function IncomeForm() {
           name="name"
           placeholder="Income Title"
           required
+          value={formData.name}
           onChange={(e) => {
             handleFormChange(e, "name");
           }}
@@ -83,6 +75,7 @@ function IncomeForm() {
           name="category"
           id="category"
           required
+          value={formData.category}
           onChange={(e) => {
             handleFormChange(e, "category");
           }}
@@ -108,6 +101,7 @@ function IncomeForm() {
           step="0.01"
           placeholder="Amount"
           required
+          value={formData.amount}
           onInput={(e) => {
             limitTwoDP(e);
           }}
@@ -117,13 +111,13 @@ function IncomeForm() {
         />
       </div>
       <div className="submit-btn">
-        <button type="submit">Add Income</button>
+        <button type="submit">Update</button>
       </div>
-    </IncomeFormStyled>
+    </IncomeEditFormStyled>
   );
 }
 
-const IncomeFormStyled = styled.form`
+const IncomeEditFormStyled = styled.form`
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -165,4 +159,4 @@ const IncomeFormStyled = styled.form`
   }
 `;
 
-export default IncomeForm;
+export default IncomeEditForm;

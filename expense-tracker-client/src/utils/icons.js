@@ -15,3 +15,5 @@ export const work = <i className="fa-solid fa-briefcase"></i>;
 export const allowance = <i className="fa-solid fa-hand-holding-hand"></i>;
 export const investment = <i className="fa-brands fa-bitcoin"></i>;
 export const others = <i className="fa-solid fa-otter"></i>;
+export const travel = <i className="fa-solid fa-plane"></i>;
+export const edit = <i className="fa-solid fa-pen-to-square"></i>;

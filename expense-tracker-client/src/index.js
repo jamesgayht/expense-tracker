@@ -14,6 +14,7 @@ import { GlobalStyle } from "./styles/GlobalStyle";
 import { GlobalProvider } from "./context/globalContext";
 import App from "./App";
 import Travel from "./components/TravelExpenses";
+import Expenses from "./components/Expenses";
 
 const router = createBrowserRouter([
   {
@@ -31,6 +32,10 @@ const router = createBrowserRouter([
   {
     path: "/travel",
     element: <AuthOnly component={Travel} />,
+  },
+  {
+    path: "/expenses",
+    element: <AuthOnly component={Expenses} />,
   },
 ]);
 

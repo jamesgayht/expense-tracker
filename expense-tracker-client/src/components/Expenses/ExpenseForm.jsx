@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 import { useGlobalContext } from "../../context/globalContext";
-// import DatePicker from "react-datepicker";
-// import "react-datepicker/dist/react-datepicker.css";
 
-function IncomeForm() {
-  const { addIncome, getIncome } = useGlobalContext();
+function ExpenseForm() {
+  const { addExpense } = useGlobalContext();
   const [formData, setFormData] = useState({
     date: "",
     name: "",
@@ -23,16 +21,16 @@ function IncomeForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addIncome(formData);
+      await addExpense(formData);
       setFormData({
         date: "",
         name: "",
         category: "",
         amount: null,
       });
-      console.log("submitting income");
+      console.log("submitting expense");
     } catch (error) {
-      console.info(">>> error adding income: ", error);
+      console.info(">>> error adding expense: ", error);
       window.alert("An error, please try again.");
     }
   };
@@ -46,15 +44,18 @@ function IncomeForm() {
   };
 
   const categoryOptions = [
-    { value: "salary", label: "Salary" },
-    { value: "freelance", label: "Freelance" },
-    { value: "allowance", label: "Allowance" },
-    { value: "investments", label: "Investments" },
+    { value: "f&b", label: "F&B" },
+    { value: "transport", label: "Transport" },
+    { value: "accommodation", label: "Accommodation" },
+    { value: "groceries", label: "Groceries" },
+    { value: "shopping", label: "Shopping" },
+    { value: "entertainment", label: "Entertainment" },
+    { value: "health & fitness", label: "Health & Fitness" },
     { value: "others", label: "Others" },
-  ];
+];
 
   return (
-    <IncomeFormStyled onSubmit={handleSubmit}>
+    <ExpenseFormStyled onSubmit={handleSubmit}>
       <div className="input-control">
         <input
           id="date"
@@ -71,7 +72,7 @@ function IncomeForm() {
           type="type"
           id="name"
           name="name"
-          placeholder="Income Title"
+          placeholder="Expense Title"
           required
           onChange={(e) => {
             handleFormChange(e, "name");
@@ -117,13 +118,13 @@ function IncomeForm() {
         />
       </div>
       <div className="submit-btn">
-        <button type="submit">Add Income</button>
+        <button type="submit">Add Expense</button>
       </div>
-    </IncomeFormStyled>
+    </ExpenseFormStyled>
   );
 }
 
-const IncomeFormStyled = styled.form`
+const ExpenseFormStyled = styled.form`
   display: flex;
   flex-direction: column;
   gap: 2rem;
@@ -165,4 +166,4 @@ const IncomeFormStyled = styled.form`
   }
 `;
 
-export default IncomeForm;
+export default ExpenseForm;

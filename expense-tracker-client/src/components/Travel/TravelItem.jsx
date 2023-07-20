@@ -12,18 +12,22 @@ import {
   trash,
   work,
 } from "../../utils/icons";
-import IncomeEditForm from "./IncomeEditForm";
+import TravelEditForm from "./TravelEditForm";
 
-function IncomeItem({
+function TravelItem({
   id,
   name,
   amount,
   date,
   category,
-  deleteIncome,
-  updateIncome,
+  ccy,
+  baseCCY,
+  fx,
+  trip,
+  deleteTravelExpense,
+  updateTravelExpense,
 }) {
-  const [selectedIncome, setSelectedIncome] = useState(null);
+  const [selectedExpense, setSelectedExpense] = useState(null);
 
   const categoryIcon = (category) => {
     switch (category) {
@@ -49,26 +53,31 @@ function IncomeItem({
 
   const handleDelete = async (id) => {
     try {
-      await deleteIncome({ id: id });
+      await deleteTravelExpense({ id: id });
     } catch (error) {
-      console.info(">>> error deleting income: ", error);
+      console.info(">>> error deleting travel: ", error);
       window.alert("An error, please try again.");
     }
   };
 
-  const handleEdit = (date, name, category, amount) => {
-    setSelectedIncome({
+  const handleEdit = (date, name, category, amount, ccy, baseCCY, fx, trip) => {
+    setSelectedExpense({
       date: date.substring(0, 10),
       name: name,
       category: category,
       amount: amount,
+      ccy: ccy,
+      baseCCY: baseCCY,
+      fx: fx,
+      trip: trip,
     });
   };
 
   return (
-    <IncomeItemStyled>
+    <TravelItemStyled>
       <div className="icon">{category ? categoryIcon(category) : ""}</div>
       <div className="content">
+        <h5>{trip}</h5>
         <h5>{name}</h5>
       </div>
       <div className="inner-content">
@@ -76,17 +85,30 @@ function IncomeItem({
           {dollar} {amount}
         </p>
         <p>
-          {calendar} {date.substring(0, 10)}
+          {calendar} {date ? date.substring(0, 10) : ""}
         </p>
         <p>
           {categories} {category}
         </p>
       </div>
+
+      <div className="inner-content">
+        <p>
+          {dollar} {ccy}
+        </p>
+        <p>
+          {calendar} {baseCCY}
+        </p>
+        <p>
+          {categories} {fx}
+        </p>
+      </div>
+
       <div className="btn-container">
         <button
           className="edit-btn"
           onClick={() => {
-            handleEdit(date, name, category, amount);
+            handleEdit(date, name, category, amount, ccy, baseCCY, fx, trip);
           }}
         >
           {edit}
@@ -102,21 +124,21 @@ function IncomeItem({
       </div>
 
       <div className="edit-form-container">
-        {selectedIncome ? (
-          <IncomeEditForm
+        {selectedExpense ? (
+          <TravelEditForm
             id={id}
-            selectedIncome={selectedIncome}
-            updateIncome={updateIncome}
+            selectedExpense={selectedExpense}
+            updateTravelExpense={updateTravelExpense}
           />
         ) : (
           ""
         )}
       </div>
-    </IncomeItemStyled>
+    </TravelItemStyled>
   );
 }
 
-const IncomeItemStyled = styled.div`
+const TravelItemStyled = styled.div`
   background: #fcf6f9;
   border: 2px solid #ffffff;
   box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
@@ -161,6 +183,7 @@ const IncomeItemStyled = styled.div`
             border-radius: 50%;
             background: (--color-blue);
         }
+
     }
 
     .inner-content {
@@ -182,10 +205,11 @@ const IncomeItemStyled = styled.div`
     }
   }
 
-  .trash-btn, .edit-btn {
+  .trash-btn,
+  .edit-btn {
     padding: 0.4rem .6rem;
     margin: 0.4rem;
   }
 `;
 
-export default IncomeItem;
+export default TravelItem;
