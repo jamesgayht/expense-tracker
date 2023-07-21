@@ -44,6 +44,7 @@ const RadarChartCompStyled = styled.div`
   box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
   border-radius: 20px;
   margin-top: 1rem;
+  overflow: scroll;
 `;
 
 export default RadarChartComp;

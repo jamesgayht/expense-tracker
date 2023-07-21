@@ -10,6 +10,7 @@ export const GlobalProvider = ({ children }) => {
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [trips, setTrips] = useState([]);
+  const [latestTrip, setLatestTrip] = useState([]);
   const [month, setMonth] = useState(null);
   const [tripAmount, setTripAmount] = useState(null);
   const [tripCCY, setTripCCY] = useState(null);
@@ -18,6 +19,7 @@ export const GlobalProvider = ({ children }) => {
   const [p3MonthIncome, setP3MonthIncome] = useState([]);
   const [currentMonthIncome, setCurrentMonthIncome] = useState(null);
   const [currentMonthExpenseByCat, setCurrentMonthExpenseByCat] = useState([]);
+  const [error, setError] = useState(null);
 
   // <----------- Travel Expenses ---------->
   const addTravelExpense = async (travelExpense) => {
@@ -32,6 +34,7 @@ export const GlobalProvider = ({ children }) => {
       .catch((error) => {
         console.error((error) => {
           console.error(">>> create trips error: ", error);
+          setError(error.response.data.message);
         });
       });
   };
@@ -46,6 +49,7 @@ export const GlobalProvider = ({ children }) => {
         const sortedTrips = res.data.sort((a, b) => {
           return new Date(b.date) - new Date(a.date);
         });
+        setLatestTrip(sortedTrips[0].trip);
         setTrips(sortedTrips);
         getTripAmount(res.data);
       })
@@ -83,6 +87,7 @@ export const GlobalProvider = ({ children }) => {
       })
       .catch((err) => {
         console.error(">>> update travel expense error: ", err);
+        setError(error.response.data.message);
       });
   };
 
@@ -121,6 +126,7 @@ export const GlobalProvider = ({ children }) => {
       .catch((error) => {
         console.error((error) => {
           console.error(">>> create income error: ", error);
+          setError(error.response.data.message);
         });
       });
   };
@@ -140,6 +146,7 @@ export const GlobalProvider = ({ children }) => {
       })
       .catch((error) => {
         console.error(">>> get expenses error: ", error);
+        setError(error.response.data.message);
       });
   };
 
@@ -170,6 +177,7 @@ export const GlobalProvider = ({ children }) => {
       })
       .catch((err) => {
         console.error(">>> update expense error: ", err);
+        setError(error.response.data.message);
       });
   };
 
@@ -236,6 +244,7 @@ export const GlobalProvider = ({ children }) => {
       .catch((error) => {
         console.error((error) => {
           console.error(">>> create income error: ", error);
+          setError(error.response.data.message);
         });
       });
   };
@@ -289,6 +298,7 @@ export const GlobalProvider = ({ children }) => {
       })
       .catch((err) => {
         console.error(">>> update income error: ", err);
+        setError(error.response.data.message);
       });
   };
 
@@ -393,6 +403,7 @@ export const GlobalProvider = ({ children }) => {
         tripCCY,
         trips,
         tripAmount,
+        latestTrip,
         addExpense,
         getExpenses,
         deleteExpense,
@@ -411,6 +422,7 @@ export const GlobalProvider = ({ children }) => {
         getCurrentMonth,
         month,
         transactionHistory,
+        error,
       }}
     >
       {children}

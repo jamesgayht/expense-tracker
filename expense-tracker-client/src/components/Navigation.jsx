@@ -13,11 +13,7 @@ function Navigation({ active, setActive }) {
     <NavStyled>
       <div className="user-container">
         <img src={avatar} alt="" />
-        <div className="text">
-          {user ? <h2>{user.name}</h2> : ""}
-
-          <p>Your Money</p>
-        </div>
+        <div className="text">{user ? <h2>{user.name}</h2> : ""}</div>
       </div>
 
       {/* menu items */}
@@ -46,7 +42,7 @@ function Navigation({ active, setActive }) {
 
 const NavStyled = styled.nav`
   padding: 2rem 1.5rem;
-  width: 374px;
+  width: 254px;
   height: 100%;
   background: rgba(252, 246, 249, 0.76);
   border: 3px solid #ffffff;

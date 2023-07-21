@@ -30,14 +30,18 @@ button {
     font-family: 'Source Code Pro', sans-serif; 
     font-size: clamp(1rem, 1.5vw, 1.2rem);
     background: var(--color-accent);
-    padding: .8rem 1.6rem;
-    border-radius: 30px;
+    padding: .3rem .8rem;
+    border-radius: 10px;
     color: #;
     box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
     &:hover {
         background: var(--color-blue);
     }
 }
+
+button:hover {
+    transform: scale(1.25);
+  }
 
 h1, h2, h3, h4, h5, h6 {
     color: var(--color-primary);
