@@ -26,6 +26,7 @@ function TravelItem({
   category,
   ccy,
   baseCCY,
+  baseAmount,
   fx,
   trip,
   deleteTravelExpense,
@@ -107,10 +108,10 @@ function TravelItem({
 
       <div className="inner-content">
         <p>
-          {currency} {ccy}
+          {baseAmount} {baseCCY}
         </p>
         <p>
-          {currency} {baseCCY}
+          {currency} {ccy}/{baseCCY}
         </p>
         <p>
           {forex} {fx}
