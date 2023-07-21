@@ -17,6 +17,7 @@ export const GlobalProvider = ({ children }) => {
   const [currentMonthExpense, setCurrentMonthExpense] = useState(null);
   const [p3MonthIncome, setP3MonthIncome] = useState([]);
   const [currentMonthIncome, setCurrentMonthIncome] = useState(null);
+  const [currentMonthExpenseByCat, setCurrentMonthExpenseByCat] = useState([]);
 
   // <----------- Travel Expenses ---------->
   const addTravelExpense = async (travelExpense) => {
@@ -92,7 +93,6 @@ export const GlobalProvider = ({ children }) => {
 
     const latestTrip = sortedTrips[0].trip;
     setTripCCY(sortedTrips[0].ccy);
-    console.info(latestTrip);
 
     const filteredTripExpense = [];
     sortedTrips.map((trip) => {
@@ -182,6 +182,17 @@ export const GlobalProvider = ({ children }) => {
     let prevMonthExp = { month: `${currYear}-${currMonth - 1}`, amount: 0 };
     let currMonthExp = { month: `${currYear}-${currMonth}`, amount: 0 };
 
+    const currMonthExpByCat = [
+      { category: "f&b", subject: "f&b", amount: 0 },
+      { category: "transport", subject: "tran", amount: 0 },
+      { category: "accommodation", subject: "acc", amount: 0 },
+      { category: "groceries", subject: "groc", amount: 0 },
+      { category: "shopping", subject: "shop", amount: 0 },
+      { category: "entertainment", subject: "ent", amount: 0 },
+      { category: "health & fitness", subject: "h&f", amount: 0 },
+      { category: "others", subject: "oth", amount: 0 },
+    ];
+
     sortedExpenses.map((exp) => {
       switch (Number(exp.date.substring(5, 7))) {
         case Number(currMonth) - 2:
@@ -194,6 +205,11 @@ export const GlobalProvider = ({ children }) => {
 
         case Number(currMonth):
           currMonthExp.amount += exp.amount;
+          let cat = exp.category;
+          currMonthExpByCat.map((curr) => {
+            if (curr.category === cat) curr.amount += exp.amount;
+            return "";
+          });
           break;
 
         default:
@@ -202,6 +218,7 @@ export const GlobalProvider = ({ children }) => {
       return "";
     });
 
+    setCurrentMonthExpenseByCat(currMonthExpByCat);
     setCurrentMonthExpense(currMonthExp.amount);
     setP3MonthExp([p2MonthExp, prevMonthExp, currMonthExp]);
   };
@@ -383,6 +400,7 @@ export const GlobalProvider = ({ children }) => {
         expenses,
         p3MonthExp,
         currentMonthExpense,
+        currentMonthExpenseByCat,
         addIncome,
         getIncome,
         deleteIncome,

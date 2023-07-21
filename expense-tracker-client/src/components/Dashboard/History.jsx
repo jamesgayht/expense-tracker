@@ -7,7 +7,7 @@ function History() {
 
   let [...txnHistory] = transactionHistory();
 
-  txnHistory = txnHistory.slice(0, 4);
+  txnHistory = txnHistory.slice(0, 5);
 
   return (
     <HistoryStyled>

@@ -1,15 +1,15 @@
 import React, { useEffect } from "react";
 import { styled } from "styled-components";
 import { InnerLayout } from "../../styles/Layouts";
-import Chart from "./Chart";
 import { dollar } from "../../utils/icons";
 import { useGlobalContext } from "../../context/globalContext";
 import History from "./History";
+import LineChart from "./LineChart";
+import RadarChartComp from "./RadarChartComp";
 
 function Dashboard() {
   const {
-    incomes,
-    expenses,
+    month,
     currentMonthIncome,
     currentMonthExpense,
     getIncome,
@@ -26,78 +26,48 @@ function Dashboard() {
   return (
     <DashboardStyled>
       <InnerLayout>
-        <h1>All Transactions</h1>
         <div className="stats-con">
           <div className="chart-con">
-            {p3MonthExp ? 
-            <Chart p3MonthExp={p3MonthExp} p3MonthIncome={p3MonthIncome} /> : ""}
+            {p3MonthExp ? (
+              <LineChart
+                p3MonthExp={p3MonthExp}
+                p3MonthIncome={p3MonthIncome}
+              />
+            ) : (
+              ""
+            )}
+            <RadarChartComp />
+          </div>
+          <div className="history-con">
+            <History />
             <div className="amount-con">
               <div className="income">
-                <h2>Total Income</h2>
-                <p>
+                <h3>{month} Total Income</h3>
+                <p style={{ color: "green" }}>
                   {dollar} {currentMonthIncome}
                 </p>
               </div>
 
               <div className="expense">
-                <h2>Total Expenses</h2>
-                <p>
+                <h3>{month} Total Expenses</h3>
+                <p style={{ color: "red" }}>
                   {dollar} {currentMonthExpense}
                 </p>
               </div>
 
               <div className="balance">
-                <h2>Balance</h2>
-                <p>
+                <h3>Balance</h3>
+                <p
+                  style={
+                    currentMonthIncome - currentMonthExpense >= 0
+                      ? { color: "green" }
+                      : { color: "red" }
+                  }
+                >
                   {dollar} {currentMonthIncome - currentMonthExpense}
                 </p>
               </div>
             </div>
-          </div>
-          <div className="history-con">
-            <History />
-            {/* <div className="salary-title">
-              <h2>
-                Min <span>Salary</span> Max
-              </h2>
-            </div>
-            <div className="salary-item">
-              <p>
-                {Math.min(
-                  ...incomes.map((income) => {
-                    return income.amount;
-                  })
-                )}
-              </p>
-              <p>
-                {Math.max(
-                  ...incomes.map((income) => {
-                    return income.amount;
-                  })
-                )}
-              </p>
-            </div>
-            <div className="expense-title">
-              <h2>
-                Min <span>Expense</span> Max
-              </h2>
-            </div>
-            <div className="expense-item">
-              <p>
-                {Math.min(
-                  ...expenses.map((expense) => {
-                    return expense.amount;
-                  })
-                )}
-              </p>
-              <p>
-                {Math.max(
-                  ...expenses.map((expense) => {
-                    return expense.amount;
-                  })
-                )}
-              </p>
-            </div> */}
           </div>
         </div>
       </InnerLayout>
@@ -114,6 +84,17 @@ const DashboardStyled = styled.div`
     .chart-con {
       grid-column: 1/4;
       height: 400px;
+    }
+
+    .history-con {
+      grid-column: 4/-1;
+      h3 {
+        margin: 1rem 0;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
       .amount-con {
         display: grid;
         grid-template-columns: repeat(4, 1fr);
@@ -132,7 +113,7 @@ const DashboardStyled = styled.div`
           border-radius: 20px;
           padding: 1rem;
           p {
-            font-size: 3.5rem;
+            font-size: 2.4rem;
             font-weight: 700;
           }
         }
@@ -144,46 +125,9 @@ const DashboardStyled = styled.div`
           justify-content: center;
           align-items: center;
           p {
-            color: #116a7b;
-            opacity: 0.6;
-            font-size: 4.5rem;
+            font-size: 2.4rem;
+            font-weight: 700;
           }
-        }
-      }
-    }
-
-    .history-con {
-      grid-column: 4/-1;
-      h2 {
-        margin: 1rem 0;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-      }
-
-      .expense-title,
-      .salary-title {
-        h2 {
-          font-size: 1.2rem;
-        }
-        span {
-          font-size: 1.8rem;
-        }
-      }
-
-      .expense-item,
-      .salary-item {
-        background: #fcf6f9;
-        border: 2px solid #ffffff;
-        box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
-        border-radius: 20px;
-        padding: 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        p {
-          font-weight: 600;
-          font-size: 1.6rem;
         }
       }
     }

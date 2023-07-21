@@ -25,8 +25,8 @@ ChartJS.register(
   ArcElement
 );
 
-function Chart() {
-  const { incomes, expenses, p3MonthIncome, p3MonthExp } = useGlobalContext();
+function LineChart() {
+  const { p3MonthIncome, p3MonthExp } = useGlobalContext();
   
   const data = {
     labels: p3MonthIncome.map((income) => {
@@ -37,7 +37,7 @@ function Chart() {
       {
         label: "Income",
         data: [
-          ...incomes.map((income) => {
+          ...p3MonthIncome.map((income) => {
             return income.amount;
           }),
         ],
@@ -48,7 +48,7 @@ function Chart() {
       {
         label: "Expenses",
         data: [
-          ...expenses.map((expense) => {
+          ...p3MonthExp.map((expense) => {
             return expense.amount;
           }),
         ],
@@ -59,19 +59,18 @@ function Chart() {
   };
 
   return (
-    <ChartStyled>
+    <LineChartStyled>
       <Line data={data} />
-    </ChartStyled>
+    </LineChartStyled>
   );
 }
 
-const ChartStyled = styled.div`
+const LineChartStyled = styled.div`
   background: #fcf6f9;
   border: 2px solid #ffffff;
   box-shadow: 0px 1px 15px rgba(0, 0, 0, 0.06);
   border-radius: 20px;
   padding: 1rem;
-  height: 100%;
 `;
 
-export default Chart;
+export default LineChart;
