@@ -2,6 +2,8 @@ import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "./auth/AuthProvider";
+import { styled } from "styled-components";
+import COVER_IMAGE from "../img/loginCoverPage.jpg";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -29,45 +31,116 @@ export default function Login() {
   };
 
   return (
-    <div className="container">
-      <h2>Login</h2>
+    <LoginStyled>
+      <div className="image-container">
+        <img src={COVER_IMAGE} alt="" />
+      </div>
+      <div className="login-container">
+        <div className="form-container">
+          <h3>
+            Unlock your potential & attain financial freedom with our proven
+            system
+          </h3>
 
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label htmlFor="email">Email:</label>
-          <input
-            type="text"
-            id="email"
-            name="email"
-            onChange={(e) => {
-              handleFormChange(e, "email");
-            }}
-          />
+          <form onSubmit={handleSubmit}>
+            <div className="input-container">
+              <input
+                type="text"
+                id="email"
+                name="email"
+                placeholder="Email"
+                onChange={(e) => {
+                  handleFormChange(e, "email");
+                }}
+              />
+              <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="Password"
+                onChange={(e) => {
+                  handleFormChange(e, "password");
+                }}
+              />
+              <div className="btn-container">
+                <button type="submit">Login</button>
+                <button
+                  onClick={() => {
+                    navigate("/register");
+                  }}
+                >
+                  Sign Up
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
-        <div>
-          <label htmlFor="password" className="form-label">
-            Password:
-          </label>
-          <input
-            type="password"
-            id="password"
-            name="password"
-            onChange={(e) => {
-              handleFormChange(e, "password");
-            }}
-          />
-        </div>
-        <div>
-          <button type="submit">Login</button>
-          <button
-            onClick={() => {
-              navigate("/register");
-            }}
-          >
-            Register
-          </button>
-        </div>
-      </form>
-    </div>
+      </div>
+    </LoginStyled>
   );
 }
+const LoginStyled = styled.div`
+  .image-container {
+    position: absolute;
+    display: flex;
+    overflow: auto;
+    z-index: -1;
+    img {
+      height: 100vh;
+      width: 100vw;
+      opacity: 0.5;
+      z-index: -1;
+    }
+  }
+
+  .input-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+
+    input {
+      border: none;
+      height: 4em;
+      width: ;
+      margin-bottom: 2em;
+      text-align: center;
+      border-radius: 0.25em;
+      padding: 2em;
+      font: inherit;
+    }
+
+    button {
+      margin: 0 1em;
+    }
+  }
+
+  .login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .form-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10%;
+    width: 25em;
+    height: 25em;
+    background: #fcf6f9;
+    border: 2px solid #ffffff;
+    border-radius: 1em;
+    box-shadow: 0 0.188em 1.55em rgb(156, 156, 156);
+    padding: 1rem;
+    z-index: 1;
+    justify-content: space-evenly;
+  }
+
+  h3 {
+    text-align: center;
+    color: var(--primary-color);
+    margin-bottom: 1em;
+  }
+`;

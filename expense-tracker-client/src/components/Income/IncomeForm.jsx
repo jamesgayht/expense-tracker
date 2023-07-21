@@ -5,7 +5,7 @@ import { useGlobalContext } from "../../context/globalContext";
 // import "react-datepicker/dist/react-datepicker.css";
 
 function IncomeForm() {
-  const { addIncome, getIncome } = useGlobalContext();
+  const { addIncome } = useGlobalContext();
   const [formData, setFormData] = useState({
     date: "",
     name: "",
@@ -24,13 +24,8 @@ function IncomeForm() {
     e.preventDefault();
     try {
       await addIncome(formData);
-      setFormData({
-        date: "",
-        name: "",
-        category: "",
-        amount: null,
-      });
-      console.log("submitting income");
+      const emptyForm = { date: "", name: "", category: "", amount: null };
+      setFormData(emptyForm);
     } catch (error) {
       console.info(">>> error adding income: ", error);
       window.alert("An error, please try again.");
@@ -54,71 +49,73 @@ function IncomeForm() {
   ];
 
   return (
-    <IncomeFormStyled onSubmit={handleSubmit}>
-      <div className="input-control">
-        <input
-          id="date"
-          name="date"
-          type="date"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "date");
-          }}
-        />
-      </div>
-      <div className="input-control">
-        <input
-          type="type"
-          id="name"
-          name="name"
-          placeholder="Income Title"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "name");
-          }}
-        />
-      </div>
-      <div className="selects input-control">
-        <select
-          name="category"
-          id="category"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "category");
-          }}
-        >
-          {/* TODO: selected throws warning, surpress? */}
-          <option value="" hidden>
-            Select Option
-          </option>
-          {categoryOptions.map(function (cat, i) {
-            return (
-              <option value={cat.value} key={i}>
-                {cat.label}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-      <div className="input-control">
-        <input
-          type="number"
-          id="amount"
-          name="amount"
-          step="0.01"
-          placeholder="Amount"
-          required
-          onInput={(e) => {
-            limitTwoDP(e);
-          }}
-          onChange={(e) => {
-            handleFormChange(e, "amount");
-          }}
-        />
-      </div>
-      <div className="submit-btn">
-        <button type="submit">Add Income</button>
-      </div>
+    <IncomeFormStyled>
+      <form onSubmit={handleSubmit}>
+        <div className="input-control">
+          <input
+            id="date"
+            name="date"
+            type="date"
+            required
+            onChange={(e) => {
+              handleFormChange(e, "date");
+            }}
+          />
+        </div>
+        <div className="input-control">
+          <input
+            type="type"
+            id="name"
+            name="name"
+            placeholder="Income Title"
+            required
+            onChange={(e) => {
+              handleFormChange(e, "name");
+            }}
+          />
+        </div>
+        <div className="selects input-control">
+          <select
+            name="category"
+            id="category"
+            required
+            onChange={(e) => {
+              handleFormChange(e, "category");
+            }}
+          >
+            {/* TODO: selected throws warning, surpress? */}
+            <option value="" hidden>
+              Select Option
+            </option>
+            {categoryOptions.map(function (cat, i) {
+              return (
+                <option value={cat.value} key={i}>
+                  {cat.label}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+        <div className="input-control">
+          <input
+            type="number"
+            id="amount"
+            name="amount"
+            step="0.01"
+            placeholder="Amount"
+            required
+            onInput={(e) => {
+              limitTwoDP(e);
+            }}
+            onChange={(e) => {
+              handleFormChange(e, "amount");
+            }}
+          />
+        </div>
+        <div className="submit-btn">
+          <button type="submit">Add Income</button>
+        </div>
+      </form>
     </IncomeFormStyled>
   );
 }

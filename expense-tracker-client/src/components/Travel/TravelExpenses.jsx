@@ -10,11 +10,11 @@ function Trips() {
     trips,
     tripCCY,
     tripAmount,
+    latestTrip,
     getTravelExpenses,
     deleteTravelExpense,
     updateTravelExpense,
     getCurrentMonth,
-    month,
   } = useGlobalContext();
 
   useEffect(() => {
@@ -26,7 +26,7 @@ function Trips() {
     <TripsStyled>
       <InnerLayout>
         <h2 className="total-travel-expense">
-          Total Travel Expense for {month}:{" "}
+          Total Travel Expense for {latestTrip}:{" "}
           <span>
             {tripCCY} {tripAmount}
           </span>
