@@ -17,7 +17,7 @@ export default function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/api/users/register", formData)
+      .post("https://expense-tracker-bzs3.onrender.com/api/users/register", formData)
       .then((response) => {
         console.info(">>> register user response: ", response);
         navigate("/login");

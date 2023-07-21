@@ -2,7 +2,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import { createContext, useContext, useState } from "react";
 
-const BASE_URL = "http://localhost:3000/api";
+const BASE_URL = "https://expense-tracker-bzs3.onrender.com/api";
 
 const GlobalContext = createContext();
 
