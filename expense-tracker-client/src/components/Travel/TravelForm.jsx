@@ -36,7 +36,7 @@ function TravelForm() {
     if (tripName) {
       axios
         .get(
-          `http://localhost:3000/api/travel/displayTrip/${selectedTrip}/currencies`,
+          `https://expense-tracker-client-y51v.onrender.com/api/travel/displayTrip/${selectedTrip}/currencies`,
           {
             headers: {Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
             },
@@ -57,7 +57,7 @@ function TravelForm() {
   // To get trips every time it refreshes
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/travel/displayTrips", {
+      .get("https://expense-tracker-client-y51v.onrender.com/api/travel/displayTrips", {
         headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
       })
       .then((res) => {
@@ -72,7 +72,7 @@ function TravelForm() {
   //change the Travel Expenses section whenever user filters a trip
   useEffect(() => {
     axios
-      .get("http://localhost:3000/api/travel/displayAll", {
+      .get("https://expense-tracker-client-y51v.onrender.com/api/travel/displayAll", {
         headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
       })
       .then((res) => {
@@ -139,7 +139,7 @@ function TravelForm() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/api/travel/insertExpense", formData, {
+      .post("https://expense-tracker-client-y51v.onrender.com/api/travel/insertExpense", formData, {
         headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
       })
       .then((res) => {
@@ -147,7 +147,7 @@ function TravelForm() {
 
         // Fetch the updated list of trips
         axios
-          .get("http://localhost:3000/api/travel/displayTrips", {
+          .get("https://expense-tracker-client-y51v.onrender.com/api/travel/displayTrips", {
             headers: {
               Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
             },
@@ -162,7 +162,7 @@ function TravelForm() {
 
         // Fetch the updated list of expenses
         axios
-          .get("http://localhost:3000/api/travel/displayAll", {
+          .get("https://expense-tracker-client-y51v.onrender.com/api/travel/displayAll", {
             headers: {
               Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
             },
