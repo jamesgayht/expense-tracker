@@ -399,6 +399,15 @@ function TravelEditForm({ id, selectedExpense, updateTravelExpense }) {
 
       <div className="submit-btn">
         <button type="submit">Update</button>
+        <button
+          type="button"
+          className="cancel-button"
+          onClick={() => {
+            window.location.reload();
+          }}
+        >
+          Cancel
+        </button>
       </div>
     </TravelEditFormStyled>
   );

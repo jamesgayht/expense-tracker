@@ -1,9 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import { useGlobalContext } from "../../context/globalContext";
+import axios from "axios";
+import Cookies from "js-cookie";
+
 
 function TravelForm() {
   const { addTravelExpense } = useGlobalContext();
+
+  const [tripType, setTripType] = useState("");
+
+  const [trips, setTrips] = useState([]);
+  const [tripName, setTripName] = useState("");
+  const [currency, setCurrency] = useState("");
+  const [baseCCY, setBaseCCY] = useState("");
+  const [fx, setFX] = useState("");
+  const [selectedTrip, setSelectedTrip] = useState("");
+  const [expenses, setExpenses] = useState([]);
+
   const [formData, setFormData] = useState({
     date: "",
     name: "",
@@ -15,33 +29,161 @@ function TravelForm() {
     trip: "",
   });
 
-  const handleFormChange = (e, fieldName) => {
-    setFormData({
-      ...formData,
-      [fieldName]: e.target.value,
-    });
-  };
+  // Refresh to get Currency, Base CCY and FX rate when trip is changed by user
+  useEffect(() => {
+    // Make sure there is a selected trip
+    console.log("getting trip ", tripName);
+    if (tripName) {
+      axios
+        .get(
+          `http://localhost:3000/api/travel/displayTrip/${selectedTrip}/currencies`,
+          {
+            headers: {Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
+            },
+          }
+        )
+        .then((res) => {
+          console.info(">>> get currencies res: ", res);
+          setCurrency(res.data.ccy);
+          setBaseCCY(res.data.baseCCY);
+          setFX(res.data.fx);
+        })
+        .catch((error) => {
+          console.error(">>> get currencies error: ", error);
+        });
+    }
+  }, [tripName]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await addTravelExpense(formData);
-      setFormData({
-        date: "",
-        name: "",
-        category: "",
-        amount: null,
-        ccy: "",
-        baseCCY: "",
-        fx: null,
-        trip: "",
+  // To get trips every time it refreshes
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/travel/displayTrips", {
+        headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
+      })
+      .then((res) => {
+        console.info(">>> get trips res: ", res);
+        setTrips(res.data);
+      })
+      .catch((error) => {
+        console.error(">>> get trips error: ", error);
       });
-      console.log("submitting travel");
-    } catch (error) {
-      console.info(">>> error adding travel: ", error);
-      window.alert("An error, please try again.");
+  }, []);
+
+  //change the Travel Expenses section whenever user filters a trip
+  useEffect(() => {
+    axios
+      .get("http://localhost:3000/api/travel/displayAll", {
+        headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
+      })
+      .then((res) => {
+        console.info(">>> get expense res: ", res);
+
+        // Filter expenses based on the selected trip
+        const filteredExpenses = selectedTrip
+          ? res.data.filter((expense) => expense.trip === selectedTrip)
+          : res.data;
+
+        setExpenses(filteredExpenses);
+      })
+      .catch((error) => {
+        console.error(">>> get expense error: ", error);
+      });
+  }, [selectedTrip]);
+
+
+
+  const handleFormChange = (e, fieldName) => {
+    console.log("getting field name", fieldName);
+    if (tripType === "existing") {
+      setFormData({
+        ...formData,
+        [fieldName]: e.target.value,
+        baseCCY: baseCCY,
+        ccy: currency,
+        trip: tripName,
+        fx: fx,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [fieldName]: e.target.value,
+      });
     }
   };
+
+  const handleTripTypeChange = (e) => {
+    setTripType(e.target.value);
+  };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   try {
+  //     await addTravelExpense(formData);
+  //     setFormData({
+  //       date: "",
+  //       name: "",
+  //       category: "",
+  //       amount: null,
+  //       ccy: "",
+  //       baseCCY: "",
+  //       fx: null,
+  //       trip: "",
+  //     });
+  //     console.log("submitting travel");
+  //   } catch (error) {
+  //     console.info(">>> error adding travel: ", error);
+  //     window.alert("An error, please try again.");
+  //   }
+  // };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post("http://localhost:3000/api/travel/insertExpense", formData, {
+        headers: { Authorization: `Bearer ${Cookies.get("userAuthToken")}` },
+      })
+      .then((res) => {
+        console.info(">>> create expense res: ", res);
+
+        // Fetch the updated list of trips
+        axios
+          .get("http://localhost:3000/api/travel/displayTrips", {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
+            },
+          })
+          .then((res) => {
+            console.info(">>> get trips res: ", res);
+            setTrips(res.data);
+          })
+          .catch((error) => {
+            console.error(">>> get trips error: ", error);
+          });
+
+        // Fetch the updated list of expenses
+        axios
+          .get("http://localhost:3000/api/travel/displayAll", {
+            headers: {
+              Authorization: `Bearer ${Cookies.get("userAuthToken")}`,
+            },
+          })
+          .then((res) => {
+            console.info(">>> get expense res: ", res);
+            setExpenses(res.data);
+          })
+          .catch((error) => {
+            console.error(">>> get expense error: ", error);
+          });
+      })
+      .catch((error) => {
+        console.error(">>> create expense error: ", error);
+      });
+  };
+
+  const handleFilterExpenses = (selectedTripName) => {
+    setSelectedTrip(selectedTripName || "");
+  };
+
 
   const limitTwoDP = (e) => {
     const t = e.target.value;
@@ -265,145 +407,341 @@ function TravelForm() {
 
   return (
     <TravelFormStyled onSubmit={handleSubmit}>
-      <div className="input-control">
-        <input
-          id="date"
-          name="date"
-          type="date"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "date");
-          }}
-        />
-      </div>
-
-      <div className="input-control">
-        <input
-          type="text"
-          id="name"
-          name="name"
-          placeholder="Travel Expense Name"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "name");
-          }}
-        />
-      </div>
-
-      <div className="selects input-control">
-        <select
-          name="category"
-          id="category"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "category");
-          }}
-        >
-          <option value="" hidden>
-            Select Option
-          </option>
-          {categoryOptions.map(function (cat, i) {
-            return (
-              <option value={cat.value} key={i}>
-                {cat.label}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-
-      <div className="input-control">
-        <input
-          type="number"
-          id="amount"
-          name="amount"
-          step="0.01"
-          placeholder="Amt in Local Currency"
-          required
-          onInput={(e) => {
-            limitTwoDP(e);
-          }}
-          onChange={(e) => {
-            handleFormChange(e, "amount");
-          }}
-        />
-      </div>
-
-      <div className="selects input-control">
-        <select
-          name="ccy"
-          id="ccy"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "ccy");
-          }}
-        >
-
-          <option value="" hidden>
-            Select Local Currency
-          </option>
-          {currencyOptions.map(function (ccy, i) {
-            return (
-              <option value={ccy.value} key={i}>
-                {ccy.label}
-              </option>
-            );
-          })}
-        </select>
-      </div>
       
-      <div className="selects input-control">
+      <label>
+        <div className="input-control">
+          <input
+            type="radio"
+            name="tripType"
+            value="existing"
+            checked={tripType === "existing"}
+            onChange={(e) => handleTripTypeChange(e)}
+          />
+          Existing Trip
+        </div>
+      </label>
+      <label>
+        <div className="input-control">
+          <input
+            type="radio"
+            name="tripType"
+            value="new"
+            checked={tripType === "new"}
+            onChange={(e) => handleTripTypeChange(e)}
+          />
+          New Trip
+        </div>
+      </label>
+
+    {tripType ==="existing" && (
+      <div>
+        <div className="selects input-control">
         <select
-          name="baseCCY"
-          id="baseCCY"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "baseCCY");
-          }}
-        >
-          <option value="" hidden>
-            Select Base Currency
-          </option>
-          {currencyOptions.map(function (ccy, i) {
-            return (
-              <option value={ccy.value} key={i}>
-                {ccy.label}
+              name="trip"
+              id="trip"
+              value={tripName}
+              onChange={(e) => {
+                setTripName(e.target.value);
+                handleFilterExpenses(e.target.value); {/* If we don't put this, then the travel expenses wouldn't change when we click on existing trip */}
+              }}
+            >
+               <option value="" hidden>Select Trip</option>
+               {trips.map((trip) => (
+                <option value={trip} key={trip}>
+                  {trip}
+                </option>
+              ))}
+            </select>
+            <div>
+          <div className="input-control">
+            <input
+              id="date"
+              name="date"
+              type="date"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "date");
+              }}
+            />
+          </div>
+
+          <div className="input-control">
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Travel Expense Name"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "name");
+              }}
+            />
+          </div>
+
+          <div className="selects input-control">
+            <select
+              name="category"
+              id="category"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "category");
+              }}
+            >
+              <option value="" hidden>
+                Select Option
               </option>
-            );
-          })}
-        </select>
-      </div>
+              {categoryOptions.map(function (cat, i) {
+                return (
+                  <option value={cat.value} key={i}>
+                    {cat.label}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
 
-      <div className="input-control">
-        <input
-          type="number"
-          id="fx"
-          name="fx"
-          step="0.01"
-          placeholder="Exchange Rate"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "fx");
-          }}
-        />
-      </div>
+          <div className="input-control">
+            <input
+              type="number"
+              id="amount"
+              name="amount"
+              step="0.01"
+              placeholder="Amt in Local Currency"
+              required
+              onInput={(e) => {
+                limitTwoDP(e);
+              }}
+              onChange={(e) => {
+                handleFormChange(e, "amount");
+              }}
+            />
+          </div>
 
-      <div className="input-control">
-        <input
-          type="text"
-          id="trip"
-          name="trip"
-          placeholder="Trip Name"
-          required
-          onChange={(e) => {
-            handleFormChange(e, "trip");
-          }}
-        />
-      </div>
+          <div className="selects input-control">
+            <select
+              name="ccy"
+              value={currency}
+              id="ccy"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "ccy");
+              }}
+            >
+              <option value="" hidden>
+                Select Local Currency
+              </option>
+              {currencyOptions.map(function (ccy, i) {
+                return (
+                  <option value={ccy.value} key={i}>
+                    {ccy.label}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
 
-      <div className="submit-btn">
-        <button type="submit">Add Travel</button>
+          <div className="selects input-control">
+            <select
+              name="baseCCY"
+              id="baseCCY"
+              required
+              value={baseCCY}
+              onChange={(e) => {
+                handleFormChange(e, "baseCCY");
+              }}
+            >
+              <option value="" hidden>
+                Select Base Currency
+              </option>
+              {currencyOptions.map(function (ccy, i) {
+                return (
+                  <option value={ccy.value} key={i}>
+                    {ccy.label}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          <div className="input-control">
+            <input
+              type="number"
+              id="fx"
+              name="fx"
+              step="0.01"
+              value={fx}
+              required
+              onChange={(e) => {
+                handleFormChange(e, "fx");
+              }}
+            />
+          </div>
+
+          <div className="input-control">
+            <input
+              type="text"
+              id="trip"
+              name="trip"
+              value={tripName}
+              placeholder="Trip Name"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "trip");
+              }}
+            />
+          </div>
+
+          <div className="submit-btn">
+            <button type="submit">Add Travel</button>
+          </div>
+        </div>
+        </div>
       </div>
+    )}
+
+
+      {tripType !== "existing" && (
+        <div>
+          <div className="input-control">
+            <input
+              id="date"
+              name="date"
+              type="date"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "date");
+              }}
+            />
+          </div>
+
+          <div className="input-control">
+            <input
+              type="text"
+              id="name"
+              name="name"
+              placeholder="Travel Expense Name"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "name");
+              }}
+            />
+          </div>
+
+          <div className="selects input-control">
+            <select
+              name="category"
+              id="category"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "category");
+              }}
+            >
+              <option value="" hidden>
+                Select Option
+              </option>
+              {categoryOptions.map(function (cat, i) {
+                return (
+                  <option value={cat.value} key={i}>
+                    {cat.label}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          <div className="input-control">
+            <input
+              type="number"
+              id="amount"
+              name="amount"
+              step="0.01"
+              placeholder="Amt in Local Currency"
+              required
+              onInput={(e) => {
+                limitTwoDP(e);
+              }}
+              onChange={(e) => {
+                handleFormChange(e, "amount");
+              }}
+            />
+          </div>
+
+          <div className="selects input-control">
+            <select
+              name="ccy"
+              id="ccy"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "ccy");
+              }}
+            >
+              <option value="" hidden>
+                Select Local Currency
+              </option>
+              {currencyOptions.map(function (ccy, i) {
+                return (
+                  <option value={ccy.value} key={i}>
+                    {ccy.label}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          <div className="selects input-control">
+            <select
+              name="baseCCY"
+              id="baseCCY"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "baseCCY");
+              }}
+            >
+              <option value="" hidden>
+                Select Base Currency
+              </option>
+              {currencyOptions.map(function (ccy, i) {
+                return (
+                  <option value={ccy.value} key={i}>
+                    {ccy.label}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+
+          <div className="input-control">
+            <input
+              type="number"
+              id="fx"
+              name="fx"
+              step="0.01"
+              placeholder="Exchange Rate"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "fx");
+              }}
+            />
+          </div>
+
+          <div className="input-control">
+            <input
+              type="text"
+              id="trip"
+              name="trip"
+              placeholder="Trip Name"
+              required
+              onChange={(e) => {
+                handleFormChange(e, "trip");
+              }}
+            />
+          </div>
+
+          <div className="submit-btn">
+            <button type="submit">Add Travel</button>
+          </div>
+        </div>
+      )}
     </TravelFormStyled>
   );
 }

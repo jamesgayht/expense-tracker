@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { styled } from "styled-components";
 import { InnerLayout } from "../../styles/Layouts";
 import { useGlobalContext } from "../../context/globalContext";
@@ -17,10 +17,16 @@ function Trips() {
     getCurrentMonth,
   } = useGlobalContext();
 
+  const [selectedTrip, setSelectedTrip] = useState("");
+
   useEffect(() => {
     getTravelExpenses();
     getCurrentMonth();
   }, []);
+
+  const handleFilterExpenses = (selectedTripName) => {
+    setSelectedTrip(selectedTripName || "");
+  };
 
   return (
     <TripsStyled>
@@ -47,6 +53,7 @@ function Trips() {
                     amount,
                     ccy,
                     baseCCY,
+                    baseAmount,
                     fx,
                     trip,
                   } = travelExpense;
@@ -60,6 +67,7 @@ function Trips() {
                       amount={amount}
                       ccy={ccy}
                       baseCCY={baseCCY}
+                      baseAmount={baseAmount}
                       fx={fx}
                       trip={trip}
                       deleteTravelExpense={deleteTravelExpense}
