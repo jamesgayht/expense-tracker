@@ -8,6 +8,7 @@ import { useGlobalContext } from "../../context/globalContext";
 function Expenses() {
   const {
     expenses,
+    currentMonthExpense,
     getExpenses,
     updateExpense,
     deleteExpense,
@@ -24,7 +25,7 @@ function Expenses() {
     <ExpensesStyled>
       <InnerLayout>
         <h2 className="total-expense">
-          Total Expense for {month}: <span>$1500</span>
+          Total Expense for {month}: <span>${currentMonthExpense}</span>
         </h2>
         <div className="expense-content">
           <div className="form-container">

@@ -6,18 +6,26 @@ import { useGlobalContext } from "../../context/globalContext";
 import IncomeItem from "./IncomeItem";
 
 function Incomes() {
-  const { incomes, updateIncome, getIncome, deleteIncome, getCurrentMonth, month } = useGlobalContext();
+  const {
+    incomes,
+    currentMonthIncome,
+    updateIncome,
+    getIncome,
+    deleteIncome,
+    getCurrentMonth,
+    month,
+  } = useGlobalContext();
 
   useEffect(() => {
     getIncome();
-    getCurrentMonth()
+    getCurrentMonth();
   }, []);
 
   return (
     <IncomesStyled>
       <InnerLayout>
         <h2 className="total-income">
-          Total Income for {month}: <span>$1500</span>
+          Total Income for {month}: <span>${currentMonthIncome}</span>
         </h2>
         <div className="income-content">
           <div className="form-container">
