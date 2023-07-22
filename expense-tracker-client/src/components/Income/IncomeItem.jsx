@@ -107,6 +107,7 @@ function IncomeItem({
             id={id}
             selectedIncome={selectedIncome}
             updateIncome={updateIncome}
+            setSelectedIncome={setSelectedIncome}
           />
         ) : (
           ""
@@ -123,8 +124,8 @@ const IncomeItemStyled = styled.div`
   border-radius: 20px;
   padding: 1rem;
   margin-bottom: 1rem;
-  display: flex; 
-  align-items: center; 
+  display: flex;
+  align-items: center;
   gap: 1rem;
   width: 100%;
   color: #222260;
@@ -135,55 +136,56 @@ const IncomeItemStyled = styled.div`
     background: #f5f5f5;
     display: flex;
     align-items: center;
-    justify-content: center; 
+    justify-content: center;
     border: 2px solid #ffffff;
     i {
-        font-size: 2.6rem;
-    } 
+      font-size: 2.6rem;
+    }
   }
   .content {
     flex: 1;
     display: flex;
-    flex-direction: column; 
-    gap: .2rem;
+    flex-direction: column;
+    gap: 0.2rem;
     h5 {
-        font-size: 1.3rem;
-        padding-left: 2rem;
-        position: relative; 
-        &::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            width: .8rem;
-            height: .8rem;
-            border-radius: 50%;
-            background: (--color-blue);
-        }
+      font-size: 1.3rem;
+      padding-left: 2rem;
+      position: relative;
+      &::before {
+        content: "";
+        position: absolute;
+        left: 0;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0.8rem;
+        height: 0.8rem;
+        border-radius: 50%;
+        background: (--color-blue);
+      }
     }
 
     .inner-content {
-        display: flex; 
-        justify-content: space-between;
-        align-items: center; 
-        .text {
-            display: flex;
-            align-items: center; 
-            gap: 1.5rem; 
-            p {
-                display: flex;
-                align-items: center; 
-                gap: 0.5rem; 
-                color: var(--primary-color);
-                opacity: 0.8;
-            }
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .text {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        p {
+          display: flex;
+          align-items: center;
+          gap: 0.5rem;
+          color: var(--primary-color);
+          opacity: 0.8;
         }
+      }
     }
   }
 
-  .trash-btn, .edit-btn {
-    padding: 0.4rem .6rem;
+  .trash-btn,
+  .edit-btn {
+    padding: 0.4rem 0.6rem;
     margin: 0.4rem;
   }
 `;

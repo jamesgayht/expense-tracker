@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 
-function ExpenseEditForm({ id, selectedExpense, updateExpense }) {
+function ExpenseEditForm({
+  id,
+  selectedExpense,
+  updateExpense,
+  setSelectedExpense,
+}) {
   const [formData, setFormData] = useState({
     date: selectedExpense.date,
     name: selectedExpense.name,
@@ -20,7 +25,7 @@ function ExpenseEditForm({ id, selectedExpense, updateExpense }) {
     e.preventDefault();
     try {
       await updateExpense(id, formData);
-      window.location.reload();
+      setSelectedExpense(null)
     } catch (error) {
       console.info(">>> error updating expense: ", error);
       window.alert("An error, please try again.");

@@ -8,7 +8,7 @@ function ExpenseForm() {
     date: "",
     name: "",
     category: "",
-    amount: null,
+    amount: "",
   });
 
   const handleFormChange = (e, fieldName) => {
@@ -26,7 +26,7 @@ function ExpenseForm() {
         date: "",
         name: "",
         category: "",
-        amount: null,
+        amount: "",
       });
       console.log("submitting expense");
     } catch (error) {
@@ -52,7 +52,7 @@ function ExpenseForm() {
     { value: "entertainment", label: "Entertainment" },
     { value: "health & fitness", label: "Health & Fitness" },
     { value: "others", label: "Others" },
-];
+  ];
 
   return (
     <ExpenseFormStyled onSubmit={handleSubmit}>
@@ -62,6 +62,7 @@ function ExpenseForm() {
           name="date"
           type="date"
           required
+          value={formData.date}
           onChange={(e) => {
             handleFormChange(e, "date");
           }}
@@ -73,6 +74,7 @@ function ExpenseForm() {
           id="name"
           name="name"
           placeholder="Expense Title"
+          value={formData.name}
           required
           onChange={(e) => {
             handleFormChange(e, "name");
@@ -84,6 +86,7 @@ function ExpenseForm() {
           name="category"
           id="category"
           required
+          value={formData.category}
           onChange={(e) => {
             handleFormChange(e, "category");
           }}
@@ -108,6 +111,7 @@ function ExpenseForm() {
           name="amount"
           step="0.01"
           placeholder="Amount"
+          value={formData.amount}
           required
           onInput={(e) => {
             limitTwoDP(e);

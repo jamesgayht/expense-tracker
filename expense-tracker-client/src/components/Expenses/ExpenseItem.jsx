@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { styled } from "styled-components";
 import {
   accommodation,
-  accomodation,
   calendar,
   categories,
   dollar,
@@ -121,6 +120,7 @@ function ExpenseItem({
             id={id}
             selectedExpense={selectedExpense}
             updateExpense={updateExpense}
+            setSelectedExpense={setSelectedExpense}
           />
         ) : (
           ""

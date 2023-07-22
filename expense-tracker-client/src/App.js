@@ -5,14 +5,10 @@ import { useState } from "react";
 import Dashboard from "./components/Dashboard/Dashboard";
 import Incomes from "./components/Income/Incomes";
 import Expenses from "./components/Expenses/Expenses";
-import { useGlobalContext } from "./context/globalContext";
-import Home from "./components/Home";
 import Travel from "./components/Travel/TravelExpenses";
 
 function App() {
   const [active, setActive] = useState(1);
-
-  const global = useGlobalContext();
 
   const displayData = () => {
     switch (active) {

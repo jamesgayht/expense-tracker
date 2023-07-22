@@ -11,6 +11,7 @@ export default function Login() {
 
   // create state to store form data
   const [formData, setFormData] = useState({});
+  const [error, setError] = useState({});
 
   const handleFormChange = (e, fieldName) => {
     setFormData({ ...formData, [fieldName]: e.target.value });
@@ -25,8 +26,10 @@ export default function Login() {
         loginSuccess(response.data.token);
         navigate("/");
       })
-      .catch((error) => {
-        console.error(">>> login user error: ", error);
+      .catch((err) => {
+        console.error(">>> login user error: ", err);
+        setError(err.response.data);
+        window.alert(error);
       });
   };
 
