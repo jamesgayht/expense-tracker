@@ -1,3 +1,4 @@
+import { GlobalStyle } from "./styles/GlobalStyle";
 import React from "react";
 import ReactDOM from "react-dom/client";
 import reportWebVitals from "./reportWebVitals";
@@ -9,7 +10,6 @@ import { CookiesProvider } from "react-cookie";
 import AuthProvider from "./components/auth/AuthProvider";
 import GuestOnly from "./components/auth/GuestOnly";
 import AuthOnly from "./components/auth/AuthOnly";
-import { GlobalStyle } from "./styles/GlobalStyle";
 import { GlobalProvider } from "./context/globalContext";
 import App from "./App";
 import Expenses from "./components/Expenses";
