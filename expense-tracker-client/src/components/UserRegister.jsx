@@ -9,6 +9,7 @@ export default function Register() {
 
   // create state to store form data
   const [formData, setFormData] = useState({});
+  const [error, setError] = useState({});
 
   const handleFormChange = (e, fieldName) => {
     setFormData({ ...formData, [fieldName]: e.target.value });
@@ -17,13 +18,18 @@ export default function Register() {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("https://expense-tracker-bzs3.onrender.com/api/users/register", formData)
+      .post(
+        "https://expense-tracker-bzs3.onrender.com/api/users/register",
+        formData
+      )
       .then((response) => {
         console.info(">>> register user response: ", response);
         navigate("/login");
       })
-      .catch((error) => {
-        console.error(">>> register user error: ", error);
+      .catch((err) => {
+        console.error(">>> register user error: ", err);
+        setError(err.response.data);
+        window.alert(error);
       });
   };
 

@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import { styled } from "styled-components";
 
-function IncomeEditForm({ id, selectedIncome, updateIncome }) {
+function IncomeEditForm({
+  id,
+  selectedIncome,
+  updateIncome,
+  setSelectedIncome,
+}) {
   const [formData, setFormData] = useState({
     date: selectedIncome.date,
     name: selectedIncome.name,
@@ -20,7 +25,7 @@ function IncomeEditForm({ id, selectedIncome, updateIncome }) {
     e.preventDefault();
     try {
       await updateIncome(id, formData);
-      window.location.reload();
+      setSelectedIncome(null)
     } catch (error) {
       console.info(">>> error updating income: ", error);
       window.alert("An error, please try again.");
