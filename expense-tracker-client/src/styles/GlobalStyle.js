@@ -16,7 +16,15 @@ export const GlobalStyle = createGlobalStyle`*
     --color-grey: #aaa;
     --color-accent: #FD8A8A;
     --color-delete: #FF0000;
-
+    
+    body {
+        font-family: 'Source Code Pro', sans-serif; 
+        font-size: clamp(1rem, 1.5vw, 1.2rem);
+        overflow: hidden;
+        color: rgba(34, 34, 96, .6)';
+    
+    }
+    
     button {
         font-family: 'Source Code Pro', sans-serif; 
         font-size: clamp(1rem, 1.5vw, 1.2rem);
@@ -33,18 +41,11 @@ export const GlobalStyle = createGlobalStyle`*
     button:hover {
         transform: scale(1.25);
       }
+    
+    h1, h2, h3, h4, h5, h6 {
+        color: var(--color-primary);
+    }
 }
 
-body {
-    font-family: 'Source Code Pro', sans-serif; 
-    font-size: clamp(1rem, 1.5vw, 1.2rem);
-    overflow: hidden;
-    color: rgba(34, 34, 96, .6)';
-
-}
-
-h1, h2, h3, h4, h5, h6 {
-    color: var(--color-primary);
-}
 
 `;
