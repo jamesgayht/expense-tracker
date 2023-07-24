@@ -28,8 +28,8 @@ export default function Register() {
       })
       .catch((err) => {
         console.error(">>> register user error: ", err);
-        setError(err.response.data);
-        window.alert(error);
+        setError(err.message);
+        window.alert(err.message);
       });
   };
 
@@ -50,6 +50,7 @@ export default function Register() {
                 id="name"
                 name="name"
                 placeholder="Name"
+                required
                 onChange={(e) => {
                   handleFormChange(e, "name");
                 }}
@@ -59,6 +60,7 @@ export default function Register() {
                 id="email"
                 name="email"
                 placeholder="Email"
+                required
                 onChange={(e) => {
                   handleFormChange(e, "email");
                 }}
@@ -68,6 +70,7 @@ export default function Register() {
                 id="password"
                 name="password"
                 placeholder="Password"
+                required
                 onChange={(e) => {
                   handleFormChange(e, "password");
                 }}

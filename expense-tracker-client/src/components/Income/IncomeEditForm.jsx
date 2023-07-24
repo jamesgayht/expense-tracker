@@ -25,11 +25,15 @@ function IncomeEditForm({
     e.preventDefault();
     try {
       await updateIncome(id, formData);
-      setSelectedIncome(null)
+      setSelectedIncome(null);
     } catch (error) {
       console.info(">>> error updating income: ", error);
       window.alert("An error, please try again.");
     }
+  };
+
+  const handleCancel = () => {
+    setSelectedIncome(null);
   };
 
   const limitTwoDP = (e) => {
@@ -115,8 +119,9 @@ function IncomeEditForm({
           }}
         />
       </div>
-      <div className="submit-btn">
+      <div className="btn-con">
         <button type="submit">Update</button>
+        <button onClick={handleCancel}>Cancel</button>
       </div>
     </IncomeEditFormStyled>
   );
@@ -161,6 +166,11 @@ const IncomeEditFormStyled = styled.form`
         color: var(--primary-color);
       }
     }
+  }
+
+  .btn-con {
+    display: flex;
+    justify-content: space-evenly;
   }
 `;
 

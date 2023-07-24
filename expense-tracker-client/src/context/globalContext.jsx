@@ -10,6 +10,7 @@ export const GlobalProvider = ({ children }) => {
   const [incomes, setIncomes] = useState([]);
   const [expenses, setExpenses] = useState([]);
   const [trips, setTrips] = useState([]);
+  const [filteredTrips, setFilteredTrips] = useState([]);
   const [latestTrip, setLatestTrip] = useState([]);
   const [month, setMonth] = useState(null);
   const [tripAmount, setTripAmount] = useState(null);
@@ -111,6 +112,15 @@ export const GlobalProvider = ({ children }) => {
     });
 
     setTripAmount(total);
+  };
+
+  const filterTripsByTripName = (tripName) => {
+    const temp = []
+    trips.map((data) => {
+      if (data.trip === tripName) temp.push(data);
+      return "";
+    });
+    setFilteredTrips(temp);
   };
 
   // <----------- Expenses ---------->
@@ -400,8 +410,12 @@ export const GlobalProvider = ({ children }) => {
         getTravelExpenses,
         deleteTravelExpense,
         updateTravelExpense,
+        filterTripsByTripName,
+        setFilteredTrips,
+        filteredTrips,
         tripCCY,
         trips,
+        setTrips,
         tripAmount,
         latestTrip,
         addExpense,

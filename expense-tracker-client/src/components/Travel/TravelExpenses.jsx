@@ -8,6 +8,8 @@ import TravelForm from "./TravelForm";
 function Trips() {
   const {
     trips,
+    filterTripsByTripName,
+    filteredTrips,
     tripCCY,
     tripAmount,
     latestTrip,
@@ -17,65 +19,97 @@ function Trips() {
     getCurrentMonth,
   } = useGlobalContext();
 
-  const [selectedTrip, setSelectedTrip] = useState("");
+  const [tripName, setTripName] = useState("");
 
   useEffect(() => {
     getTravelExpenses();
     getCurrentMonth();
   }, []);
 
-  const handleFilterExpenses = (selectedTripName) => {
-    setSelectedTrip(selectedTripName || "");
-  };
+  useEffect(() => {
+    filterTripsByTripName(tripName);
+  }, [tripName]);
 
   return (
     <TripsStyled>
       <InnerLayout>
         <h2 className="total-travel-expense">
-          Total Travel Expense for {latestTrip}:{" "}
+          Total Travel Expense for {latestTrip}:
           <span>
             {tripCCY} {tripAmount}
           </span>
         </h2>
         <div className="travel-expense-content">
           <div className="form-container">
-            <TravelForm />
+            <TravelForm tripName={tripName} setTripName={setTripName} />
           </div>
 
           <div className="travel-expenses">
-            {trips
-              ? trips.map((travelExpense, idx) => {
-                  const {
-                    _id,
-                    name,
-                    date,
-                    category,
-                    amount,
-                    ccy,
-                    baseCCY,
-                    baseAmount,
-                    fx,
-                    trip,
-                  } = travelExpense;
-                  return (
-                    <TravelItem
-                      key={_id}
-                      id={_id}
-                      name={name}
-                      date={date}
-                      category={category}
-                      amount={amount}
-                      ccy={ccy}
-                      baseCCY={baseCCY}
-                      baseAmount={baseAmount}
-                      fx={fx}
-                      trip={trip}
-                      deleteTravelExpense={deleteTravelExpense}
-                      updateTravelExpense={updateTravelExpense}
-                    />
-                  );
-                })
-              : ""}
+            {filteredTrips.length < 1 &&
+              trips.map((travelExpense, idx) => {
+                const {
+                  _id,
+                  name,
+                  date,
+                  category,
+                  amount,
+                  ccy,
+                  baseCCY,
+                  baseAmount,
+                  fx,
+                  trip,
+                } = travelExpense;
+                return (
+                  <TravelItem
+                    key={_id}
+                    id={_id}
+                    name={name}
+                    date={date}
+                    category={category}
+                    amount={amount}
+                    ccy={ccy}
+                    baseCCY={baseCCY}
+                    baseAmount={baseAmount}
+                    fx={fx}
+                    trip={trip}
+                    deleteTravelExpense={deleteTravelExpense}
+                    updateTravelExpense={updateTravelExpense}
+                  />
+                );
+              })}
+            
+            {filteredTrips.length >= 1 &&
+              filteredTrips.map((travelExpense, idx) => {
+                const {
+                  _id,
+                  name,
+                  date,
+                  category,
+                  amount,
+                  ccy,
+                  baseCCY,
+                  baseAmount,
+                  fx,
+                  trip,
+                } = travelExpense;
+                return (
+                  <TravelItem
+                    key={_id}
+                    id={_id}
+                    name={name}
+                    date={date}
+                    category={category}
+                    amount={amount}
+                    ccy={ccy}
+                    baseCCY={baseCCY}
+                    baseAmount={baseAmount}
+                    fx={fx}
+                    trip={trip}
+                    deleteTravelExpense={deleteTravelExpense}
+                    updateTravelExpense={updateTravelExpense}
+                  />
+                );
+              })}
           </div>
         </div>
       </InnerLayout>
