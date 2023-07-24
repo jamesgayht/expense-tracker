@@ -5,7 +5,7 @@ import axios from "axios";
 import Cookies from "js-cookie";
 
 function TravelForm({ tripName, setTripName }) {
-  const { addTravelExpense, setFilteredTrips } = useGlobalContext();
+  const { setFilteredTrips } = useGlobalContext();
 
   const [tripType, setTripType] = useState("");
 
@@ -164,6 +164,17 @@ function TravelForm({ tripName, setTripName }) {
           .then((res) => {
             console.info(">>> get trips res: ", res);
             setTrips(res.data);
+            setFormData({
+              date: "",
+              name: "",
+              category: "",
+              amount: "",
+              ccy: "",
+              baseCCY: "",
+              fx: "",
+              trip: "",
+            });
+            setTripName();
           })
           .catch((error) => {
             console.error(">>> get trips error: ", error);
@@ -474,6 +485,7 @@ function TravelForm({ tripName, setTripName }) {
                   name="date"
                   type="date"
                   required
+                  value={formData.date}
                   onChange={(e) => {
                     handleFormChange(e, "date");
                   }}
@@ -487,6 +499,7 @@ function TravelForm({ tripName, setTripName }) {
                   name="name"
                   placeholder="Travel Expense Name"
                   required
+                  value={formData.name}
                   onChange={(e) => {
                     handleFormChange(e, "name");
                   }}
@@ -498,6 +511,7 @@ function TravelForm({ tripName, setTripName }) {
                   name="category"
                   id="category"
                   required
+                  value={formData.category}
                   onChange={(e) => {
                     handleFormChange(e, "category");
                   }}
@@ -523,6 +537,7 @@ function TravelForm({ tripName, setTripName }) {
                   step="0.01"
                   placeholder="Amt in Local Currency"
                   required
+                  value={formData.amount}
                   onInput={(e) => {
                     limitTwoDP(e);
                   }}
@@ -535,7 +550,7 @@ function TravelForm({ tripName, setTripName }) {
               <div className="selects input-control">
                 <select
                   name="ccy"
-                  value={currency}
+                  value={currency ? currency : formData.ccy}
                   id="ccy"
                   required
                   onChange={(e) => {
@@ -560,7 +575,7 @@ function TravelForm({ tripName, setTripName }) {
                   name="baseCCY"
                   id="baseCCY"
                   required
-                  value={baseCCY}
+                  value={baseCCY ? baseCCY : formData.baseCCY}
                   onChange={(e) => {
                     handleFormChange(e, "baseCCY");
                   }}
@@ -585,7 +600,7 @@ function TravelForm({ tripName, setTripName }) {
                   name="fx"
                   step="0.01"
                   placeholder="Exchange Rate"
-                  value={fx}
+                  value={fx ? fx : formData.fx}
                   required
                   onChange={(e) => {
                     handleFormChange(e, "fx");
@@ -598,7 +613,7 @@ function TravelForm({ tripName, setTripName }) {
                   type="text"
                   id="trip"
                   name="trip"
-                  value={tripName}
+                  value={tripName ? tripName : formData.trip}
                   placeholder="Trip Name"
                   required
                   onChange={(e) => {

@@ -41,7 +41,7 @@ function Trips() {
         </h2>
         <div className="travel-expense-content">
           <div className="form-container">
-            <TravelForm tripName={tripName} setTripName={setTripName} />
+            <TravelForm tripName={tripName} setTripName={setTripName} trips={trips} />
           </div>
 
           <div className="travel-expenses">
