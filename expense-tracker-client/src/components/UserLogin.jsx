@@ -28,8 +28,8 @@ export default function Login() {
       })
       .catch((err) => {
         console.error(">>> login user error: ", err);
-        setError(err.response.data);
-        window.alert(error);
+        setError(err.message);
+        window.alert(err.message);
       });
   };
 
@@ -52,6 +52,7 @@ export default function Login() {
                 id="email"
                 name="email"
                 placeholder="Email"
+                required
                 onChange={(e) => {
                   handleFormChange(e, "email");
                 }}
@@ -61,6 +62,7 @@ export default function Login() {
                 id="password"
                 name="password"
                 placeholder="Password"
+                required
                 onChange={(e) => {
                   handleFormChange(e, "password");
                 }}

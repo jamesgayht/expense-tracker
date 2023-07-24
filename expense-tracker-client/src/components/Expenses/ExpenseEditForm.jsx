@@ -25,11 +25,15 @@ function ExpenseEditForm({
     e.preventDefault();
     try {
       await updateExpense(id, formData);
-      setSelectedExpense(null)
+      setSelectedExpense(null);
     } catch (error) {
       console.info(">>> error updating expense: ", error);
       window.alert("An error, please try again.");
     }
+  };
+
+  const handleCancel = () => {
+    setSelectedExpense(null);
   };
 
   const limitTwoDP = (e) => {
@@ -118,8 +122,9 @@ function ExpenseEditForm({
           }}
         />
       </div>
-      <div className="submit-btn">
+      <div className="btn-con">
         <button type="submit">Update</button>
+        <button onClick={handleCancel}>Cancel</button>
       </div>
     </ExpenseEditFormStyled>
   );
@@ -164,6 +169,11 @@ const ExpenseEditFormStyled = styled.form`
         color: var(--primary-color);
       }
     }
+  }
+
+  .btn-con {
+    display: flex;
+    justify-content: space-evenly;
   }
 `;
 
